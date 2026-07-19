@@ -1,0 +1,124 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Use Case" id="Dvi53piyqCaxZSwF1w0P">
+    <mxGraphModel dx="3922" dy="2166" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-50" parent="1" style="whiteSpace=wrap;html=1;aspect=fixed;" value="" vertex="1">
+          <mxGeometry height="1600" width="1600" x="360" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=28;fontStyle=1;fontColor=#202621;" value="HR-Flow - Use Case dijagram" vertex="1">
+          <mxGeometry height="40" width="750" x="385" y="302" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=14;fontColor=#66706a;" value="Funkcionalnosti sustava prema korisničkim ulogama" vertex="1">
+          <mxGeometry height="25" width="800" x="385" y="347" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingTop=12;spacingLeft=15;strokeColor=#c8cec9;strokeWidth=2;fillColor=#fbfcfa;fontColor=#147d6f;fontSize=16;fontStyle=1;" value="Sustav HR-Flow" vertex="1">
+          <mxGeometry height="1220" width="940" x="670" y="392" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-5" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontStyle=1;fontColor=#202621;strokeColor=#202621;" value="Administrator" vertex="1">
+          <mxGeometry height="145" width="90" x="400" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-6" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontStyle=1;fontColor=#202621;strokeColor=#202621;" value="HR djelatnik" vertex="1">
+          <mxGeometry height="145" width="90" x="400" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-7" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontStyle=1;fontColor=#202621;strokeColor=#202621;" value="Manager" vertex="1">
+          <mxGeometry height="147" width="90" x="1775" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-8" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14;fontStyle=1;fontColor=#202621;strokeColor=#202621;" value="Zaposlenik" vertex="1">
+          <mxGeometry height="148" width="90" x="1775" y="1150" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-32" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-9" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-9" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Upravljanje korisnicima" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="437" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-33" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-10" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-10" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Postavke sustava" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="522" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-40" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-11" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-11" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Upravljanje zaposlenicima" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="627" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-39" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-12" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-12" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Evidencija radnog vremena" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="712" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-38" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-13" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-13" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Upravljanje odsustvima" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="797" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-34" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-14" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-36" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-14" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-44" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-14" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-48" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-14" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-14" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Pregled dashboarda" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="902" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-35" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-15" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-37" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-15" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-43" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-15" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-49" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-15" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-15" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Pregled obavijesti" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="987" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-41" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-16" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-16" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Pregled vlastitog tima" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="1107" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-42" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-17" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-17" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Obrada zahtjeva za odsustvo" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="1192" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-47" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-18" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-18" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Pregled vlastitih podataka" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="1307" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-46" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-19" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-19" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Unos radnog vremena" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="1392" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-45" edge="1" parent="1" source="3ASyA_pu2HQ-0tuqKRMA-20" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3ASyA_pu2HQ-0tuqKRMA-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3ASyA_pu2HQ-0tuqKRMA-20" parent="1" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#147d6f;strokeWidth=2;fillColor=#ffffff;fontColor=#202621;fontSize=14;fontStyle=1;" value="Slanje zahtjeva za odsustvo" vertex="1">
+          <mxGeometry height="66" width="360" x="950" y="1477" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
