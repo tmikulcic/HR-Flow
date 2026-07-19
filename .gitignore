@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Local notes
+notes/
+
+# Editor and operating-system files
+.DS_Store
+.vscode/
+*.local
