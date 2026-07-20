@@ -11,7 +11,8 @@
   "dependencies": {
     "@vitejs/plugin-vue": "latest",
     "vite": "latest",
-    "vue": "latest"
+    "vue": "latest",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@tailwindcss/vite": "latest",
