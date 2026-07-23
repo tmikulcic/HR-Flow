@@ -11,6 +11,7 @@ import NotFoundPage from '../pages/NotFoundPage.vue'
 import NotificationsPage from '../pages/NotificationsPage.vue'
 import TeamPage from '../pages/TeamPage.vue'
 import TimeTrackingPage from '../pages/TimeTrackingPage.vue'
+import UiPreviewPage from '../pages/UiPreviewPage.vue'
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -33,6 +34,7 @@ const routes = [
   { path: '/approvals', name: 'approvals', component: ApprovalsPage },
   { path: '/notifications', name: 'notifications', component: NotificationsPage },
   { path: '/administration', name: 'administration', component: AdministrationPage },
+  { path: '/ui-preview', name: 'ui-preview', component: UiPreviewPage },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage },
 ]
 
