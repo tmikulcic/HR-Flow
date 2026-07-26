@@ -1,5 +1,5 @@
 <script setup>
-import AppIcon from './AppIcon.vue'
+import AppIcon from './AppIcon.vue';
 
 const props = defineProps({
   title: {
@@ -14,11 +14,13 @@ const props = defineProps({
     type: String,
     default: 'inbox',
   },
-})
+});
 </script>
 
 <template>
-  <div class="grid justify-items-center border border-line-strong bg-surface px-6 py-10 text-center">
+  <div
+    class="grid justify-items-center border border-line-strong bg-surface px-6 py-10 text-center"
+  >
     <div class="mb-4 grid size-10 place-items-center bg-brand-soft text-brand">
       <slot name="icon"><AppIcon :name="props.icon" /></slot>
     </div>

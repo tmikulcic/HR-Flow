@@ -1,13 +1,13 @@
 <script setup>
-import AppIcon from './AppIcon.vue'
-import Avatar from './Avatar.vue'
-import BrandLogo from './BrandLogo.vue'
+import AppIcon from './AppIcon.vue';
+import Avatar from './Avatar.vue';
+import BrandLogo from './BrandLogo.vue';
 
 defineProps({
   open: Boolean,
-})
+});
 
-const emit = defineEmits(['close', 'navigate'])
+const emit = defineEmits(['close', 'navigate']);
 
 const workspaceItems = [
   { label: 'Dashboard', to: '/dashboard', icon: 'home' },
@@ -17,15 +17,15 @@ const workspaceItems = [
   { label: 'My team', to: '/team', icon: 'team' },
   { label: 'Approvals', to: '/approvals', icon: 'approvals', badge: 3 },
   { label: 'Notifications', to: '/notifications', icon: 'bell', badge: 4 },
-]
+];
 
 const administrationItems = [
   { label: 'Administration', to: '/administration', icon: 'settings' },
-]
+];
 
 function handleNavigation(event, navigate) {
-  navigate(event)
-  emit('navigate')
+  navigate(event);
+  emit('navigate');
 }
 </script>
 
@@ -52,12 +52,18 @@ function handleNavigation(event, navigate) {
 
     <nav class="grid gap-6">
       <div>
-        <p class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8fb1a9]">
+        <p
+          class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8fb1a9]"
+        >
           Workspace
         </p>
         <ul class="grid gap-1">
           <li v-for="item in workspaceItems" :key="item.to">
-            <RouterLink v-slot="{ href, navigate, isActive }" :to="item.to" custom>
+            <RouterLink
+              v-slot="{ href, navigate, isActive }"
+              :to="item.to"
+              custom
+            >
               <a
                 :href="href"
                 :class="[
@@ -71,7 +77,9 @@ function handleNavigation(event, navigate) {
                 <span
                   :class="[
                     'grid size-6 shrink-0 place-items-center rounded-badge',
-                    isActive ? 'bg-[#8ee0ca] text-sidebar' : 'bg-white/6 text-[#9cc8bd]',
+                    isActive
+                      ? 'bg-[#8ee0ca] text-sidebar'
+                      : 'bg-white/6 text-[#9cc8bd]',
                   ]"
                 >
                   <AppIcon :name="item.icon" :size="15" />
@@ -90,12 +98,18 @@ function handleNavigation(event, navigate) {
       </div>
 
       <div>
-        <p class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8fb1a9]">
+        <p
+          class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8fb1a9]"
+        >
           Admin
         </p>
         <ul class="grid gap-1">
           <li v-for="item in administrationItems" :key="item.to">
-            <RouterLink v-slot="{ href, navigate, isActive }" :to="item.to" custom>
+            <RouterLink
+              v-slot="{ href, navigate, isActive }"
+              :to="item.to"
+              custom
+            >
               <a
                 :href="href"
                 :class="[
@@ -109,7 +123,9 @@ function handleNavigation(event, navigate) {
                 <span
                   :class="[
                     'grid size-6 shrink-0 place-items-center rounded-badge',
-                    isActive ? 'bg-[#8ee0ca] text-sidebar' : 'bg-white/6 text-[#9cc8bd]',
+                    isActive
+                      ? 'bg-[#8ee0ca] text-sidebar'
+                      : 'bg-white/6 text-[#9cc8bd]',
                   ]"
                 >
                   <AppIcon :name="item.icon" :size="15" />
@@ -122,11 +138,15 @@ function handleNavigation(event, navigate) {
       </div>
     </nav>
 
-    <div class="mt-auto flex items-center gap-3 border-t border-white/10 px-2 pt-4">
+    <div
+      class="mt-auto flex items-center gap-3 border-t border-white/10 px-2 pt-4"
+    >
       <Avatar name="Olivia Carter" size="small" />
       <div class="min-w-0">
         <strong class="block truncate text-xs">Olivia Carter</strong>
-        <span class="block truncate text-[10px] text-[#95b6ae]">HR Manager</span>
+        <span class="block truncate text-[10px] text-[#95b6ae]"
+          >HR Manager</span
+        >
       </div>
     </div>
   </aside>

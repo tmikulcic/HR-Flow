@@ -1,18 +1,18 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import AdministrationPage from '../pages/AdministrationPage.vue'
-import ApprovalsPage from '../pages/ApprovalsPage.vue'
-import AppLayout from '../layouts/AppLayout.vue'
-import DashboardPage from '../pages/DashboardPage.vue'
-import EmployeeDetailPage from '../pages/EmployeeDetailPage.vue'
-import EmployeesPage from '../pages/EmployeesPage.vue'
-import LeaveRequestsPage from '../pages/LeaveRequestsPage.vue'
-import LoginPage from '../pages/LoginPage.vue'
-import NewLeaveRequestPage from '../pages/NewLeaveRequestPage.vue'
-import NotFoundPage from '../pages/NotFoundPage.vue'
-import NotificationsPage from '../pages/NotificationsPage.vue'
-import TeamPage from '../pages/TeamPage.vue'
-import TimeTrackingPage from '../pages/TimeTrackingPage.vue'
-import UiPreviewPage from '../pages/UiPreviewPage.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import AdministrationPage from '../pages/AdministrationPage.vue';
+import ApprovalsPage from '../pages/ApprovalsPage.vue';
+import AppLayout from '../layouts/AppLayout.vue';
+import DashboardPage from '../pages/DashboardPage.vue';
+import EmployeeDetailPage from '../pages/EmployeeDetailPage.vue';
+import EmployeesPage from '../pages/EmployeesPage.vue';
+import LeaveRequestsPage from '../pages/LeaveRequestsPage.vue';
+import LoginPage from '../pages/LoginPage.vue';
+import NewLeaveRequestPage from '../pages/NewLeaveRequestPage.vue';
+import NotFoundPage from '../pages/NotFoundPage.vue';
+import NotificationsPage from '../pages/NotificationsPage.vue';
+import TeamPage from '../pages/TeamPage.vue';
+import TimeTrackingPage from '../pages/TimeTrackingPage.vue';
+import UiPreviewPage from '../pages/UiPreviewPage.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -32,13 +32,19 @@ const routes = [
         path: 'employees',
         name: 'employees',
         component: EmployeesPage,
-        meta: { title: 'Employees', subtitle: 'People directory and employee records' },
+        meta: {
+          title: 'Employees',
+          subtitle: 'People directory and employee records',
+        },
       },
       {
         path: 'employees/:employeeId',
         name: 'employee-detail',
         component: EmployeeDetailPage,
-        meta: { title: 'Employee profile', subtitle: 'Employee details and activity' },
+        meta: {
+          title: 'Employee profile',
+          subtitle: 'Employee details and activity',
+        },
       },
       {
         path: 'time-tracking',
@@ -50,7 +56,10 @@ const routes = [
         path: 'leave-requests',
         name: 'leave-requests',
         component: LeaveRequestsPage,
-        meta: { title: 'My leave', subtitle: 'Balance, requests and upcoming time off' },
+        meta: {
+          title: 'My leave',
+          subtitle: 'Balance, requests and upcoming time off',
+        },
       },
       {
         path: 'leave-requests/new',
@@ -74,27 +83,33 @@ const routes = [
         path: 'notifications',
         name: 'notifications',
         component: NotificationsPage,
-        meta: { title: 'Notifications', subtitle: 'Updates that need your attention' },
+        meta: {
+          title: 'Notifications',
+          subtitle: 'Updates that need your attention',
+        },
       },
       {
         path: 'administration',
         name: 'administration',
         component: AdministrationPage,
-        meta: { title: 'Administration', subtitle: 'Users, roles and company settings' },
+        meta: {
+          title: 'Administration',
+          subtitle: 'Users, roles and company settings',
+        },
       },
     ],
   },
   { path: '/ui-preview', name: 'ui-preview', component: UiPreviewPage },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage },
-]
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-})
+});
 
 router.afterEach((to) => {
-  document.title = to.meta.title ? `${to.meta.title} · HR-Flow` : 'HR-Flow'
-})
+  document.title = to.meta.title ? `${to.meta.title} · HR-Flow` : 'HR-Flow';
+});
 
-export default router
+export default router;

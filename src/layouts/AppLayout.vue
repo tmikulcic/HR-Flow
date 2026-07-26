@@ -1,25 +1,27 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import AppSidebar from '../components/AppSidebar.vue'
-import AppTopbar from '../components/AppTopbar.vue'
+import { computed, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import AppSidebar from '../components/AppSidebar.vue';
+import AppTopbar from '../components/AppTopbar.vue';
 
-const route = useRoute()
-const sidebarOpen = ref(false)
+const route = useRoute();
+const sidebarOpen = ref(false);
 
-const pageTitle = computed(() => route.meta.title || 'HR-Flow')
-const pageSubtitle = computed(() => route.meta.subtitle || '')
+const pageTitle = computed(() => route.meta.title || 'HR-Flow');
+const pageSubtitle = computed(() => route.meta.subtitle || '');
 
 watch(
   () => route.fullPath,
   () => {
-    sidebarOpen.value = false
+    sidebarOpen.value = false;
   },
-)
+);
 </script>
 
 <template>
-  <div class="min-h-screen bg-canvas lg:grid lg:grid-cols-[244px_minmax(0,1fr)]">
+  <div
+    class="min-h-screen bg-canvas lg:grid lg:grid-cols-[244px_minmax(0,1fr)]"
+  >
     <AppSidebar
       :open="sidebarOpen"
       @close="sidebarOpen = false"

@@ -1,24 +1,24 @@
 <script setup>
-import { ref } from 'vue'
-import AppButton from '../components/AppButton.vue'
-import AppIcon from '../components/AppIcon.vue'
-import AppInput from '../components/AppInput.vue'
-import AppModal from '../components/AppModal.vue'
-import AppSelect from '../components/AppSelect.vue'
-import Avatar from '../components/Avatar.vue'
-import EmptyState from '../components/EmptyState.vue'
-import StatusBadge from '../components/StatusBadge.vue'
+import { ref } from 'vue';
+import AppButton from '../components/AppButton.vue';
+import AppIcon from '../components/AppIcon.vue';
+import AppInput from '../components/AppInput.vue';
+import AppModal from '../components/AppModal.vue';
+import AppSelect from '../components/AppSelect.vue';
+import Avatar from '../components/Avatar.vue';
+import EmptyState from '../components/EmptyState.vue';
+import StatusBadge from '../components/StatusBadge.vue';
 
-const name = ref('')
-const role = ref('')
-const modalOpen = ref(false)
+const name = ref('');
+const role = ref('');
+const modalOpen = ref(false);
 
 const roleOptions = [
   { value: 'administrator', label: 'Administrator' },
   { value: 'hr', label: 'HR staff' },
   { value: 'manager', label: 'Manager' },
   { value: 'employee', label: 'Employee' },
-]
+];
 
 const iconNames = [
   'home',
@@ -29,7 +29,7 @@ const iconNames = [
   'approvals',
   'bell',
   'settings',
-]
+];
 </script>
 
 <template>
@@ -37,7 +37,9 @@ const iconNames = [
     <div class="mx-auto grid max-w-5xl gap-8">
       <header>
         <h1>HR-Flow UI preview</h1>
-        <p class="mt-2 text-muted">Reusable components used across the application.</p>
+        <p class="mt-2 text-muted">
+          Reusable components used across the application.
+        </p>
       </header>
 
       <section class="border border-line-strong bg-surface p-6">
@@ -52,9 +54,20 @@ const iconNames = [
         </div>
       </section>
 
-      <section class="grid gap-6 border border-line-strong bg-surface p-6 sm:grid-cols-2">
-        <AppInput v-model="name" label="Employee name" placeholder="Enter a name" hint="Use the full name." />
-        <AppInput label="Work email" model-value="invalid-email" error="Enter a valid email address." />
+      <section
+        class="grid gap-6 border border-line-strong bg-surface p-6 sm:grid-cols-2"
+      >
+        <AppInput
+          v-model="name"
+          label="Employee name"
+          placeholder="Enter a name"
+          hint="Use the full name."
+        />
+        <AppInput
+          label="Work email"
+          model-value="invalid-email"
+          error="Enter a valid email address."
+        />
         <AppSelect
           v-model="role"
           label="System role"
@@ -94,10 +107,18 @@ const iconNames = [
       </EmptyState>
     </div>
 
-    <AppModal :open="modalOpen" title="Example modal" @close="modalOpen = false">
-      <p class="text-muted">This modal will later be reused for simple forms and confirmations.</p>
+    <AppModal
+      :open="modalOpen"
+      title="Example modal"
+      @close="modalOpen = false"
+    >
+      <p class="text-muted">
+        This modal will later be reused for simple forms and confirmations.
+      </p>
       <template #footer>
-        <AppButton variant="secondary" @click="modalOpen = false">Cancel</AppButton>
+        <AppButton variant="secondary" @click="modalOpen = false"
+          >Cancel</AppButton
+        >
         <AppButton @click="modalOpen = false">Confirm</AppButton>
       </template>
     </AppModal>

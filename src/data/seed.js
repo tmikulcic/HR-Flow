@@ -7,11 +7,11 @@ import {
   TIME_ENTRY_STATUSES,
   USER_ACCESS_STATUSES,
   USER_ROLES,
-} from '../domain/index.js'
+} from '../domain/index.js';
 
-export const SEED_VERSION = 1
+export const SEED_VERSION = 1;
 
-const COMPANY_ID = 'company-northstar'
+const COMPANY_ID = 'company-northstar';
 
 /**
  * Initial local database used during development.
@@ -533,4 +533,4 @@ export const seedDatabase = {
       createdAt: '2026-07-01T08:30:00.000Z',
     },
   ],
-}
+};

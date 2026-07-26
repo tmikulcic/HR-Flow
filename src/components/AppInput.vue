@@ -1,7 +1,7 @@
 <script setup>
-import { computed, useId } from 'vue'
+import { computed, useId } from 'vue';
 
-defineOptions({ inheritAttrs: false })
+defineOptions({ inheritAttrs: false });
 
 const props = defineProps({
   id: {
@@ -34,12 +34,14 @@ const props = defineProps({
   },
   disabled: Boolean,
   required: Boolean,
-})
+});
 
-const emit = defineEmits(['update:modelValue'])
-const generatedId = useId()
-const inputId = computed(() => props.id || generatedId)
-const messageId = computed(() => (props.error || props.hint ? `${inputId.value}-message` : undefined))
+const emit = defineEmits(['update:modelValue']);
+const generatedId = useId();
+const inputId = computed(() => props.id || generatedId);
+const messageId = computed(() =>
+  props.error || props.hint ? `${inputId.value}-message` : undefined,
+);
 
 const inputClasses = computed(() => [
   'w-full rounded-control border bg-surface px-3 py-2 text-sm outline-none transition-colors',
@@ -47,14 +49,20 @@ const inputClasses = computed(() => [
   props.error
     ? 'border-danger focus:border-danger'
     : 'border-line-strong focus:border-brand',
-])
+]);
 </script>
 
 <template>
   <div class="grid gap-1.5">
-    <label v-if="props.label" :for="inputId" class="text-xs font-semibold text-muted">
+    <label
+      v-if="props.label"
+      :for="inputId"
+      class="text-xs font-semibold text-muted"
+    >
       {{ props.label }}
-      <span v-if="props.required" aria-hidden="true" class="text-danger">*</span>
+      <span v-if="props.required" aria-hidden="true" class="text-danger"
+        >*</span
+      >
     </label>
     <input
       v-bind="$attrs"
@@ -69,7 +77,11 @@ const inputClasses = computed(() => [
       :class="inputClasses"
       @input="emit('update:modelValue', $event.target.value)"
     />
-    <p v-if="props.error" :id="messageId" class="text-xs text-danger">{{ props.error }}</p>
-    <p v-else-if="props.hint" :id="messageId" class="text-xs text-subtle">{{ props.hint }}</p>
+    <p v-if="props.error" :id="messageId" class="text-xs text-danger">
+      {{ props.error }}
+    </p>
+    <p v-else-if="props.hint" :id="messageId" class="text-xs text-subtle">
+      {{ props.hint }}
+    </p>
   </div>
 </template>

@@ -1,6 +1,8 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
-import router from './router'
+import { createApp } from 'vue';
+import './style.css';
+import App from './App.vue';
+import router from './router';
+import { initializeLocalDatabase } from './repositories';
 
-createApp(App).use(router).mount('#app')
+initializeLocalDatabase();
+createApp(App).use(router).mount('#app');
