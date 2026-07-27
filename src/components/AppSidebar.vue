@@ -1,4 +1,7 @@
 <script setup>
+import { computed } from 'vue';
+import { hasPermission, PERMISSIONS } from '../domain/index.js';
+import { useSessionStore } from '../stores/sessionStore.js';
 import AppIcon from './AppIcon.vue';
 import Avatar from './Avatar.vue';
 import BrandLogo from './BrandLogo.vue';
@@ -8,20 +11,89 @@ defineProps({
 });
 
 const emit = defineEmits(['close', 'navigate']);
+const session = useSessionStore();
 
 const workspaceItems = [
-  { label: 'Dashboard', to: '/dashboard', icon: 'home' },
-  { label: 'Employees', to: '/employees', icon: 'employees' },
-  { label: 'Time tracking', to: '/time-tracking', icon: 'clock' },
-  { label: 'My leave', to: '/leave-requests', icon: 'calendar' },
-  { label: 'My team', to: '/team', icon: 'team' },
-  { label: 'Approvals', to: '/approvals', icon: 'approvals', badge: 3 },
-  { label: 'Notifications', to: '/notifications', icon: 'bell', badge: 4 },
+  {
+    label: 'Dashboard',
+    to: '/dashboard',
+    icon: 'home',
+    permission: PERMISSIONS.VIEW_DASHBOARD,
+  },
+  {
+    label: 'Employees',
+    to: '/employees',
+    icon: 'employees',
+    permission: PERMISSIONS.VIEW_EMPLOYEES,
+  },
+  {
+    label: 'Time tracking',
+    to: '/time-tracking',
+    icon: 'clock',
+    permission: PERMISSIONS.TRACK_TIME,
+  },
+  {
+    label: 'My leave',
+    to: '/leave-requests',
+    icon: 'calendar',
+    permission: PERMISSIONS.MANAGE_OWN_LEAVE,
+  },
+  {
+    label: 'My team',
+    to: '/team',
+    icon: 'team',
+    permission: PERMISSIONS.VIEW_TEAM,
+  },
+  {
+    label: 'Approvals',
+    to: '/approvals',
+    icon: 'approvals',
+    badge: 3,
+    permission: PERMISSIONS.REVIEW_LEAVE_REQUESTS,
+  },
+  {
+    label: 'Notifications',
+    to: '/notifications',
+    icon: 'bell',
+    badge: 4,
+    permission: PERMISSIONS.VIEW_NOTIFICATIONS,
+  },
 ];
 
 const administrationItems = [
-  { label: 'Administration', to: '/administration', icon: 'settings' },
+  {
+    label: 'Administration',
+    to: '/administration',
+    icon: 'settings',
+    permission: PERMISSIONS.MANAGE_ADMINISTRATION,
+  },
 ];
+
+const visibleWorkspaceItems = computed(() =>
+  workspaceItems.filter((item) =>
+    hasPermission(session.currentRole.value, item.permission),
+  ),
+);
+
+const visibleAdministrationItems = computed(() =>
+  administrationItems.filter((item) =>
+    hasPermission(session.currentRole.value, item.permission),
+  ),
+);
+
+const currentEmployeeName = computed(() => {
+  const employee = session.currentEmployee.value;
+
+  if (employee) {
+    return `${employee.firstName} ${employee.lastName}`;
+  }
+
+  return session.currentUser.value?.email ?? 'HR-Flow user';
+});
+
+const currentJobTitle = computed(
+  () => session.currentEmployee.value?.jobTitle ?? session.currentRole.value,
+);
 
 function handleNavigation(event, navigate) {
   navigate(event);
@@ -58,7 +130,7 @@ function handleNavigation(event, navigate) {
           Workspace
         </p>
         <ul class="grid gap-1">
-          <li v-for="item in workspaceItems" :key="item.to">
+          <li v-for="item in visibleWorkspaceItems" :key="item.to">
             <RouterLink
               v-slot="{ href, navigate, isActive }"
               :to="item.to"
@@ -97,14 +169,14 @@ function handleNavigation(event, navigate) {
         </ul>
       </div>
 
-      <div>
+      <div v-if="visibleAdministrationItems.length">
         <p
           class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8fb1a9]"
         >
           Admin
         </p>
         <ul class="grid gap-1">
-          <li v-for="item in administrationItems" :key="item.to">
+          <li v-for="item in visibleAdministrationItems" :key="item.to">
             <RouterLink
               v-slot="{ href, navigate, isActive }"
               :to="item.to"
@@ -141,12 +213,14 @@ function handleNavigation(event, navigate) {
     <div
       class="mt-auto flex items-center gap-3 border-t border-white/10 px-2 pt-4"
     >
-      <Avatar name="Olivia Carter" size="small" />
+      <Avatar :name="currentEmployeeName" size="small" />
       <div class="min-w-0">
-        <strong class="block truncate text-xs">Olivia Carter</strong>
-        <span class="block truncate text-[10px] text-[#95b6ae]"
-          >HR Manager</span
-        >
+        <strong class="block truncate text-xs">{{
+          currentEmployeeName
+        }}</strong>
+        <span class="block truncate text-[10px] text-[#95b6ae]">
+          {{ currentJobTitle }}
+        </span>
       </div>
     </div>
   </aside>

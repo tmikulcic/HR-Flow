@@ -1,6 +1,10 @@
 <script setup>
+import { computed } from 'vue';
+import { useSessionStore } from '../stores/sessionStore.js';
 import AppIcon from './AppIcon.vue';
 import Avatar from './Avatar.vue';
+
+const session = useSessionStore();
 
 defineProps({
   title: {
@@ -14,6 +18,16 @@ defineProps({
 });
 
 defineEmits(['open-navigation']);
+
+const currentEmployeeName = computed(() => {
+  const employee = session.currentEmployee.value;
+
+  if (employee) {
+    return `${employee.firstName} ${employee.lastName}`;
+  }
+
+  return session.currentUser.value?.email ?? 'HR-Flow user';
+});
 </script>
 
 <template>
@@ -49,7 +63,7 @@ defineEmits(['open-navigation']);
           aria-hidden="true"
         />
       </RouterLink>
-      <Avatar name="Olivia Carter" size="small" />
+      <Avatar :name="currentEmployeeName" size="small" />
     </div>
   </header>
 </template>
