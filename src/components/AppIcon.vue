@@ -33,6 +33,7 @@ const iconPaths = {
   inbox: ['M4 5h16v14H4z', 'M4 14h4l2 3h4l2-3h4'],
   close: ['M6 6l12 12', 'M18 6 6 18'],
   menu: ['M4 7h16', 'M4 12h16', 'M4 17h16'],
+  logout: ['M10 5H5v14h5', 'M14 8l4 4-4 4', 'M18 12H9'],
 };
 
 const props = defineProps({
@@ -52,6 +53,7 @@ const props = defineProps({
         'inbox',
         'close',
         'menu',
+        'logout',
       ].includes(value),
   },
   size: {

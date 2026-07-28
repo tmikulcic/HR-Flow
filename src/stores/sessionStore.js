@@ -24,8 +24,8 @@ function clearState() {
   state.company = null;
 }
 
-function getStoredSession() {
-  const storedSession = globalThis.localStorage.getItem(LOCAL_SESSION_KEY);
+function getSessionFromStorage(storage) {
+  const storedSession = storage.getItem(LOCAL_SESSION_KEY);
 
   if (!storedSession) {
     return null;
@@ -41,13 +41,31 @@ function getStoredSession() {
     // Invalid session data is removed below.
   }
 
-  globalThis.localStorage.removeItem(LOCAL_SESSION_KEY);
+  storage.removeItem(LOCAL_SESSION_KEY);
 
   return null;
 }
 
-function saveSession(userId) {
-  globalThis.localStorage.setItem(
+function getStoredSession() {
+  return (
+    getSessionFromStorage(globalThis.localStorage) ??
+    getSessionFromStorage(globalThis.sessionStorage)
+  );
+}
+
+function clearStoredSession() {
+  globalThis.localStorage.removeItem(LOCAL_SESSION_KEY);
+  globalThis.sessionStorage.removeItem(LOCAL_SESSION_KEY);
+}
+
+function saveSession(userId, rememberMe) {
+  clearStoredSession();
+
+  const storage = rememberMe
+    ? globalThis.localStorage
+    : globalThis.sessionStorage;
+
+  storage.setItem(
     LOCAL_SESSION_KEY,
     JSON.stringify({
       version: SESSION_VERSION,
@@ -85,7 +103,7 @@ export function initializeSession() {
   clearState();
 
   if (storedSession && !loadUser(storedSession.userId)) {
-    globalThis.localStorage.removeItem(LOCAL_SESSION_KEY);
+    clearStoredSession();
   }
 
   state.initialized = true;
@@ -93,22 +111,22 @@ export function initializeSession() {
   return state.user !== null;
 }
 
-export function signInUser(userId) {
+export function signInUser(userId, rememberMe = true) {
   if (!loadUser(userId)) {
     return false;
   }
 
-  saveSession(userId);
+  saveSession(userId, rememberMe);
 
   return true;
 }
 
-export function signInDemoUser() {
-  return signInUser(DEMO_USER_ID);
+export function signInDemoUser(rememberMe = true) {
+  return signInUser(DEMO_USER_ID, rememberMe);
 }
 
 export function signOut() {
-  globalThis.localStorage.removeItem(LOCAL_SESSION_KEY);
+  clearStoredSession();
   clearState();
 }
 

@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { hasPermission, PERMISSIONS } from '../domain/index.js';
 import { useSessionStore } from '../stores/sessionStore.js';
+import { useRouter } from 'vue-router';
 import AppIcon from './AppIcon.vue';
 import Avatar from './Avatar.vue';
 import BrandLogo from './BrandLogo.vue';
@@ -12,6 +13,7 @@ defineProps({
 
 const emit = defineEmits(['close', 'navigate']);
 const session = useSessionStore();
+const router = useRouter();
 
 const workspaceItems = [
   {
@@ -98,6 +100,12 @@ const currentJobTitle = computed(
 function handleNavigation(event, navigate) {
   navigate(event);
   emit('navigate');
+}
+
+function handleSignOut() {
+  session.signOut();
+  emit('close');
+  router.replace({ name: 'login' });
 }
 </script>
 
@@ -222,6 +230,15 @@ function handleNavigation(event, navigate) {
           {{ currentJobTitle }}
         </span>
       </div>
+      <button
+        type="button"
+        class="ml-auto grid size-8 shrink-0 place-items-center rounded-control text-[#95b6ae] hover:bg-white/10 hover:text-white"
+        aria-label="Sign out"
+        title="Sign out"
+        @click="handleSignOut"
+      >
+        <AppIcon name="logout" :size="17" />
+      </button>
     </div>
   </aside>
 </template>
