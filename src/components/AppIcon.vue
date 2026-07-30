@@ -34,6 +34,7 @@ const iconPaths = {
   close: ['M6 6l12 12', 'M18 6 6 18'],
   menu: ['M4 7h16', 'M4 12h16', 'M4 17h16'],
   logout: ['M10 5H5v14h5', 'M14 8l4 4-4 4', 'M18 12H9'],
+  search: ['m21 21-4.35-4.35', 'M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0'],
 };
 
 const props = defineProps({
@@ -54,6 +55,7 @@ const props = defineProps({
         'close',
         'menu',
         'logout',
+        'search',
       ].includes(value),
   },
   size: {

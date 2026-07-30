@@ -1,19 +1,65 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import AppIcon from '../components/AppIcon.vue';
+import AppSelect from '../components/AppSelect.vue';
 import Avatar from '../components/Avatar.vue';
+import EmptyState from '../components/EmptyState.vue';
 import StatusBadge from '../components/StatusBadge.vue';
-import { getEmployeeDirectory } from '../services/employeeService.js';
+import {
+  filterEmployeeDirectory,
+  getEmployeeDirectory,
+  getEmployeeFilterOptions,
+} from '../services/employeeService.js';
 import { useSessionStore } from '../stores/sessionStore.js';
 
 const session = useSessionStore();
+const searchTerm = ref('');
+const selectedTeam = ref('');
+const selectedStatus = ref('');
 
 const employees = computed(() =>
   getEmployeeDirectory(session.currentCompany.value?.id),
 );
 
+const filterOptions = computed(() => getEmployeeFilterOptions(employees.value));
+
+const filteredEmployees = computed(() =>
+  filterEmployeeDirectory(employees.value, {
+    search: searchTerm.value,
+    teamId: selectedTeam.value,
+    status: selectedStatus.value,
+  }),
+);
+
 const teamCount = computed(
   () => new Set(employees.value.map((employee) => employee.teamId)).size,
 );
+
+const hasActiveFilters = computed(
+  () =>
+    Boolean(searchTerm.value.trim()) ||
+    Boolean(selectedTeam.value) ||
+    Boolean(selectedStatus.value),
+);
+
+const emptyStateCopy = computed(() =>
+  employees.value.length
+    ? {
+        title: 'No matching employees',
+        description:
+          'Try another search term or clear one of the selected filters.',
+      }
+    : {
+        title: 'No employees found',
+        description: 'This company does not have any employee records yet.',
+      },
+);
+
+function clearFilters() {
+  searchTerm.value = '';
+  selectedTeam.value = '';
+  selectedStatus.value = '';
+}
 </script>
 
 <template>
@@ -46,8 +92,62 @@ const teamCount = computed(
       </div>
     </section>
 
-    <section class="mt-6 overflow-hidden border border-line bg-surface">
-      <div v-if="employees.length" class="overflow-x-auto">
+    <section class="mt-6">
+      <div class="border border-line bg-surface">
+        <div
+          class="grid gap-4 border-b border-line p-4 lg:grid-cols-[minmax(260px,1fr)_180px_180px]"
+        >
+          <label class="relative block">
+            <span class="sr-only">Search employees</span>
+            <AppIcon
+              name="search"
+              :size="17"
+              class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-subtle"
+            />
+            <input
+              v-model="searchTerm"
+              type="search"
+              class="w-full pl-10"
+              placeholder="Search by name or email"
+              autocomplete="off"
+            />
+          </label>
+
+          <AppSelect
+            v-model="selectedTeam"
+            :options="filterOptions.teams"
+            aria-label="Filter by team"
+          />
+
+          <AppSelect
+            v-model="selectedStatus"
+            :options="filterOptions.statuses"
+            aria-label="Filter by status"
+          />
+        </div>
+
+        <div
+          class="flex min-h-11 items-center justify-between gap-4 px-5 py-2 text-xs text-muted"
+        >
+          <span>
+            Showing {{ filteredEmployees.length }} of
+            {{ employees.length }} employees
+          </span>
+          <button
+            v-if="hasActiveFilters"
+            type="button"
+            class="font-semibold text-brand hover:text-brand-dark"
+            @click="clearFilters"
+          >
+            Clear filters
+          </button>
+        </div>
+      </div>
+
+      <div
+        v-if="filteredEmployees.length"
+        class="overflow-x-auto border-x border-b border-line bg-surface"
+      >
         <table class="w-full min-w-[920px] border-collapse text-left">
           <caption class="sr-only">
             Employee directory
@@ -92,7 +192,7 @@ const teamCount = computed(
 
           <tbody class="divide-y divide-line">
             <tr
-              v-for="employee in employees"
+              v-for="employee in filteredEmployees"
               :key="employee.id"
               class="transition-colors hover:bg-surface-soft/70"
             >
@@ -145,12 +245,23 @@ const teamCount = computed(
         </table>
       </div>
 
-      <div v-else class="px-5 py-12 text-center">
-        <h3>No employees found</h3>
-        <p class="mt-2 text-sm text-muted">
-          This company does not have any employee records yet.
-        </p>
-      </div>
+      <EmptyState
+        v-else
+        icon="employees"
+        :title="emptyStateCopy.title"
+        :description="emptyStateCopy.description"
+        class="border-t-0"
+      >
+        <template v-if="hasActiveFilters" #action>
+          <button
+            type="button"
+            class="rounded-control border border-line-strong bg-surface px-3.5 py-2 text-sm font-semibold hover:bg-surface-soft"
+            @click="clearFilters"
+          >
+            Clear filters
+          </button>
+        </template>
+      </EmptyState>
     </section>
   </main>
 </template>

@@ -51,3 +51,47 @@ export function getEmployeeDirectory(companyId) {
     })
     .sort((first, second) => first.fullName.localeCompare(second.fullName));
 }
+
+export function getEmployeeFilterOptions(employees) {
+  const teams = new Map();
+
+  employees.forEach((employee) => {
+    if (employee.teamId) {
+      teams.set(employee.teamId, employee.teamName);
+    }
+  });
+
+  return {
+    teams: [
+      { value: '', label: 'All teams' },
+      ...[...teams.entries()]
+        .map(([value, label]) => ({ value, label }))
+        .sort((first, second) => first.label.localeCompare(second.label)),
+    ],
+    statuses: [
+      { value: '', label: 'All statuses' },
+      ...Object.entries(STATUS_DETAILS).map(([value, details]) => ({
+        value,
+        label: details.label,
+      })),
+    ],
+  };
+}
+
+export function filterEmployeeDirectory(
+  employees,
+  { search = '', teamId = '', status = '' } = {},
+) {
+  const normalizedSearch = search.trim().toLowerCase();
+
+  return employees.filter((employee) => {
+    const matchesSearch =
+      !normalizedSearch ||
+      employee.fullName.toLowerCase().includes(normalizedSearch) ||
+      employee.email.toLowerCase().includes(normalizedSearch);
+    const matchesTeam = !teamId || employee.teamId === teamId;
+    const matchesStatus = !status || employee.status === status;
+
+    return matchesSearch && matchesTeam && matchesStatus;
+  });
+}
