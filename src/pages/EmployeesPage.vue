@@ -3,8 +3,10 @@ import { computed, ref } from 'vue';
 import AppIcon from '../components/AppIcon.vue';
 import AppSelect from '../components/AppSelect.vue';
 import Avatar from '../components/Avatar.vue';
+import EmployeeFormModal from '../components/EmployeeFormModal.vue';
 import EmptyState from '../components/EmptyState.vue';
 import StatusBadge from '../components/StatusBadge.vue';
+import { hasPermission, PERMISSIONS } from '../domain/index.js';
 import {
   filterEmployeeDirectory,
   getEmployeeDirectory,
@@ -16,10 +18,14 @@ const session = useSessionStore();
 const searchTerm = ref('');
 const selectedTeam = ref('');
 const selectedStatus = ref('');
+const employeeFormOpen = ref(false);
+const dataVersion = ref(0);
 
-const employees = computed(() =>
-  getEmployeeDirectory(session.currentCompany.value?.id),
-);
+const employees = computed(() => {
+  dataVersion.value;
+
+  return getEmployeeDirectory(session.currentCompany.value?.id);
+});
 
 const filterOptions = computed(() => getEmployeeFilterOptions(employees.value));
 
@@ -55,10 +61,21 @@ const emptyStateCopy = computed(() =>
       },
 );
 
+const canManageEmployees = computed(() =>
+  hasPermission(session.currentRole.value, PERMISSIONS.MANAGE_EMPLOYEES),
+);
+
 function clearFilters() {
   searchTerm.value = '';
   selectedTeam.value = '';
   selectedStatus.value = '';
+}
+
+function handleEmployeeSaved() {
+  employeeFormOpen.value = false;
+  dataVersion.value += 1;
+  session.initializeSession();
+  clearFilters();
 }
 </script>
 
@@ -80,15 +97,25 @@ function clearFilters() {
         </p>
       </div>
 
-      <div class="flex gap-6 text-right">
-        <div>
-          <strong class="block text-lg">{{ employees.length }}</strong>
-          <span class="text-xs text-muted">Employees</span>
+      <div class="flex flex-wrap items-end gap-6">
+        <div class="flex gap-6 text-right">
+          <div>
+            <strong class="block text-lg">{{ employees.length }}</strong>
+            <span class="text-xs text-muted">Employees</span>
+          </div>
+          <div>
+            <strong class="block text-lg">{{ teamCount }}</strong>
+            <span class="text-xs text-muted">Teams</span>
+          </div>
         </div>
-        <div>
-          <strong class="block text-lg">{{ teamCount }}</strong>
-          <span class="text-xs text-muted">Teams</span>
-        </div>
+        <button
+          v-if="canManageEmployees"
+          type="button"
+          class="inline-flex min-h-9 items-center justify-center rounded-control border border-brand bg-brand px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-dark"
+          @click="employeeFormOpen = true"
+        >
+          Add employee
+        </button>
       </div>
     </section>
 
@@ -263,5 +290,12 @@ function clearFilters() {
         </template>
       </EmptyState>
     </section>
+
+    <EmployeeFormModal
+      :open="employeeFormOpen"
+      :company-id="session.currentCompany.value?.id ?? ''"
+      @close="employeeFormOpen = false"
+      @saved="handleEmployeeSaved"
+    />
   </main>
 </template>

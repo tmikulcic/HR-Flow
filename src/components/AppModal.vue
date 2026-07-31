@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, onMounted, useId } from 'vue';
+import { computed, onBeforeUnmount, onMounted, useId } from 'vue';
 import AppIcon from './AppIcon.vue';
 
 const props = defineProps({
@@ -12,10 +12,19 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  size: {
+    type: String,
+    default: 'default',
+    validator: (value) => ['default', 'large'].includes(value),
+  },
 });
 
 const emit = defineEmits(['close']);
 const titleId = useId();
+const modalClasses = computed(() => [
+  'flex max-h-[calc(100vh-2.5rem)] w-full flex-col border border-line-strong bg-surface',
+  props.size === 'large' ? 'max-w-3xl' : 'max-w-lg',
+]);
 
 function closeModal() {
   emit('close');
@@ -41,7 +50,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeydown));
       @mousedown.self="handleBackdrop"
     >
       <section
-        class="w-full max-w-lg border border-line-strong bg-surface"
+        :class="modalClasses"
         role="dialog"
         aria-modal="true"
         :aria-labelledby="titleId"
@@ -59,7 +68,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeydown));
             <AppIcon name="close" :size="18" />
           </button>
         </header>
-        <div class="px-5 py-5">
+        <div class="overflow-y-auto px-5 py-5">
           <slot />
         </div>
         <footer

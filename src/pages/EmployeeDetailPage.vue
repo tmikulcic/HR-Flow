@@ -3,14 +3,18 @@ import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import AppIcon from '../components/AppIcon.vue';
 import Avatar from '../components/Avatar.vue';
+import EmployeeFormModal from '../components/EmployeeFormModal.vue';
 import EmptyState from '../components/EmptyState.vue';
 import StatusBadge from '../components/StatusBadge.vue';
+import { hasPermission, PERMISSIONS } from '../domain/index.js';
 import { getEmployeeProfile } from '../services/employeeProfileService.js';
 import { useSessionStore } from '../stores/sessionStore.js';
 
 const route = useRoute();
 const session = useSessionStore();
 const activeTab = ref('overview');
+const employeeFormOpen = ref(false);
+const dataVersion = ref(0);
 
 const tabs = [
   { id: 'overview', label: 'Overview' },
@@ -18,14 +22,29 @@ const tabs = [
   { id: 'leave', label: 'Leave history' },
 ];
 
-const profile = computed(() =>
-  getEmployeeProfile(session.currentCompany.value?.id, route.params.employeeId),
+const profile = computed(() => {
+  dataVersion.value;
+
+  return getEmployeeProfile(
+    session.currentCompany.value?.id,
+    route.params.employeeId,
+  );
+});
+
+const canManageEmployees = computed(() =>
+  hasPermission(session.currentRole.value, PERMISSIONS.MANAGE_EMPLOYEES),
 );
 
 const activityIcons = {
   time: 'clock',
   leave: 'calendar',
 };
+
+function handleEmployeeSaved() {
+  employeeFormOpen.value = false;
+  dataVersion.value += 1;
+  session.initializeSession();
+}
 </script>
 
 <template>
@@ -62,6 +81,14 @@ const activityIcons = {
             <span>{{ profile.employee.employmentTypeLabel }}</span>
           </div>
         </div>
+        <button
+          v-if="canManageEmployees"
+          type="button"
+          class="inline-flex min-h-9 items-center justify-center rounded-control border border-brand bg-brand px-3.5 py-2 text-sm font-semibold text-white hover:bg-brand-dark sm:ml-auto"
+          @click="employeeFormOpen = true"
+        >
+          Edit employee
+        </button>
       </section>
 
       <nav class="mt-6 flex border-b border-line" aria-label="Profile sections">
@@ -376,5 +403,14 @@ const activityIcons = {
         </RouterLink>
       </template>
     </EmptyState>
+
+    <EmployeeFormModal
+      v-if="profile"
+      :open="employeeFormOpen"
+      :company-id="session.currentCompany.value?.id ?? ''"
+      :employee-id="profile.employee.id"
+      @close="employeeFormOpen = false"
+      @saved="handleEmployeeSaved"
+    />
   </main>
 </template>
