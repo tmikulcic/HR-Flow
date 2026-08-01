@@ -35,6 +35,8 @@ const iconPaths = {
   menu: ['M4 7h16', 'M4 12h16', 'M4 17h16'],
   logout: ['M10 5H5v14h5', 'M14 8l4 4-4 4', 'M18 12H9'],
   search: ['m21 21-4.35-4.35', 'M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0'],
+  'chevron-left': ['m15 18-6-6 6-6'],
+  'chevron-right': ['m9 18 6-6-6-6'],
 };
 
 const props = defineProps({
@@ -56,6 +58,8 @@ const props = defineProps({
         'menu',
         'logout',
         'search',
+        'chevron-left',
+        'chevron-right',
       ].includes(value),
   },
   size: {
