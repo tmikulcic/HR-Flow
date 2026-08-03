@@ -190,6 +190,65 @@ watch(
       </div>
     </section>
 
+    <section
+      v-if="weeklyRecords"
+      class="mt-6 grid grid-cols-2 border border-line bg-surface lg:grid-cols-4"
+      aria-label="Weekly working time summary"
+    >
+      <article class="border-b border-r border-line px-5 py-4 lg:border-b-0">
+        <p class="text-[10px] font-bold uppercase tracking-[0.08em] text-muted">
+          Hours this week
+        </p>
+        <strong class="mt-2 block text-xl tabular-nums">
+          {{ weeklyRecords.summary.totalLabel }}
+        </strong>
+      </article>
+      <article class="border-b border-line px-5 py-4 lg:border-b-0 lg:border-r">
+        <p class="text-[10px] font-bold uppercase tracking-[0.08em] text-muted">
+          Average day
+        </p>
+        <strong class="mt-2 block text-xl tabular-nums">
+          {{ weeklyRecords.summary.averageLabel }}
+        </strong>
+      </article>
+      <article class="border-r border-line px-5 py-4">
+        <p class="text-[10px] font-bold uppercase tracking-[0.08em] text-muted">
+          Overtime
+        </p>
+        <strong class="mt-2 block text-xl tabular-nums">
+          {{ weeklyRecords.summary.overtimeLabel }}
+        </strong>
+      </article>
+      <article class="px-5 py-4">
+        <p class="text-[10px] font-bold uppercase tracking-[0.08em] text-muted">
+          Completion
+        </p>
+        <strong class="mt-2 block text-xl tabular-nums">
+          {{ weeklyRecords.summary.completionPercentage }}%
+        </strong>
+      </article>
+    </section>
+
+    <div
+      v-if="weeklyRecords?.summary.missingDays.length"
+      class="border-x border-b border-warning bg-warning-soft px-5 py-3 text-sm text-warning"
+      role="status"
+    >
+      <strong>
+        {{ weeklyRecords.summary.missingDays.length }}
+        {{
+          weeklyRecords.summary.missingDays.length === 1
+            ? 'weekday needs'
+            : 'weekdays need'
+        }}
+        attention.
+      </strong>
+      Add working time for
+      {{
+        weeklyRecords.summary.missingDays.map((day) => day.label).join(', ')
+      }}.
+    </div>
+
     <div
       v-if="weeklyRecords"
       class="mt-6 grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]"

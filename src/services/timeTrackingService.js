@@ -6,6 +6,9 @@ import {
 } from '../repositories/index.js';
 
 const DAY_IN_MILLISECONDS = 86_400_000;
+const WORKDAYS_PER_WEEK = 5;
+const STANDARD_DAY_MINUTES = 8 * 60;
+const STANDARD_WEEK_MINUTES = WORKDAYS_PER_WEEK * STANDARD_DAY_MINUTES;
 
 function parseDate(date) {
   return new Date(`${date}T12:00:00`);
@@ -96,7 +99,7 @@ export function getWeeklyTimeRecords(companyId, employeeId, weekStart) {
     .getAllByCompany(companyId)
     .filter((entry) => entry.employeeId === employeeId);
   const startDate = parseDate(getWeekStart(weekStart));
-  const days = Array.from({ length: 5 }, (_, index) => {
+  const days = Array.from({ length: WORKDAYS_PER_WEEK }, (_, index) => {
     const date = new Date(startDate.getTime() + index * DAY_IN_MILLISECONDS);
     const dateId = toDateString(date);
     const entry = entries.find((item) => item.date === dateId);
@@ -114,17 +117,30 @@ export function getWeeklyTimeRecords(companyId, employeeId, weekStart) {
       endTime: isComplete ? entry.endTime : '—',
       breakLabel:
         isComplete && entry.breakMinutes ? `${entry.breakMinutes} min` : '—',
+      totalMinutes: isComplete ? entry.totalMinutes : 0,
       totalLabel: isComplete ? formatMinutes(entry.totalMinutes) : '—',
       status: isComplete ? 'complete' : 'missing',
       statusLabel: isComplete ? 'Complete' : 'Not logged',
       statusTone: isComplete ? 'success' : 'warning',
     };
   });
-  const endDate = new Date(startDate.getTime() + 4 * DAY_IN_MILLISECONDS);
+  const endDate = new Date(
+    startDate.getTime() + (WORKDAYS_PER_WEEK - 1) * DAY_IN_MILLISECONDS,
+  );
   const weekFormatter = new Intl.DateTimeFormat('en', {
     month: 'short',
     day: 'numeric',
   });
+  const completedDays = days.filter((day) => day.status === 'complete');
+  const missingDays = days.filter((day) => day.status === 'missing');
+  const totalMinutes = completedDays.reduce(
+    (total, day) => total + day.totalMinutes,
+    0,
+  );
+  const averageMinutes = completedDays.length
+    ? Math.round(totalMinutes / completedDays.length)
+    : 0;
+  const overtimeMinutes = Math.max(0, totalMinutes - STANDARD_WEEK_MINUTES);
 
   return {
     employee: {
@@ -138,5 +154,22 @@ export function getWeeklyTimeRecords(companyId, employeeId, weekStart) {
       endDate,
     )}, ${endDate.getFullYear()}`,
     days,
+    summary: {
+      totalMinutes,
+      totalLabel: formatMinutes(totalMinutes),
+      averageMinutes,
+      averageLabel: formatMinutes(averageMinutes),
+      overtimeMinutes,
+      overtimeLabel: formatMinutes(overtimeMinutes),
+      completionPercentage: Math.round(
+        (completedDays.length / WORKDAYS_PER_WEEK) * 100,
+      ),
+      completedDays: completedDays.length,
+      requiredDays: WORKDAYS_PER_WEEK,
+      missingDays: missingDays.map((day) => ({
+        date: day.date,
+        label: day.dateLabel,
+      })),
+    },
   };
 }
