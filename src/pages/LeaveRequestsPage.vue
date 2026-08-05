@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import AppIcon from '../components/AppIcon.vue';
 import AppSelect from '../components/AppSelect.vue';
 import StatusBadge from '../components/StatusBadge.vue';
@@ -8,7 +9,9 @@ import { getEmployeeLeaveOverview } from '../services/leaveOverviewService.js';
 import { useSessionStore } from '../stores/sessionStore.js';
 
 const session = useSessionStore();
+const route = useRoute();
 const selectedStatus = ref('all');
+const requestCreated = computed(() => route.query.created === '1');
 
 const leaveOverview = computed(() =>
   getEmployeeLeaveOverview(
@@ -86,6 +89,14 @@ const filteredRequests = computed(() => {
         Request leave
       </RouterLink>
     </section>
+
+    <p
+      v-if="requestCreated"
+      class="mt-6 border-l-2 border-success bg-success-soft px-4 py-3 text-sm text-success"
+      role="status"
+    >
+      Your leave request was submitted and is waiting for approval.
+    </p>
 
     <section
       class="mt-6 grid grid-cols-2 border border-line bg-surface lg:grid-cols-4"
