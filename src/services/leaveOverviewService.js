@@ -72,6 +72,7 @@ function getRequestView(request) {
     typeLabel: LEAVE_TYPE_LABELS[request.type] ?? 'Other leave',
     dateRangeLabel: formatDateRange(request.startDate, request.endDate),
     submittedLabel: formatDate(request.createdAt),
+    decidedLabel: request.decidedAt ? formatDate(request.decidedAt) : '—',
     durationLabel: `${request.workingDays} ${
       request.workingDays === 1 ? 'day' : 'days'
     }`,

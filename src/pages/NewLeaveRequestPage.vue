@@ -214,7 +214,7 @@ function handleSubmit() {
                 <strong class="block text-lg tabular-nums">
                   {{ requestPreview?.currentRemainingDays ?? 0 }}
                 </strong>
-                <span class="text-[11px] text-muted">Current</span>
+                <span class="text-[11px] text-muted">Available</span>
               </div>
               <div class="px-3 py-3">
                 <strong class="block text-lg tabular-nums">

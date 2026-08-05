@@ -1,24 +1,49 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import AppButton from '../components/AppButton.vue';
 import AppIcon from '../components/AppIcon.vue';
 import AppSelect from '../components/AppSelect.vue';
+import LeaveRequestDetailsModal from '../components/LeaveRequestDetailsModal.vue';
 import StatusBadge from '../components/StatusBadge.vue';
 import { LEAVE_REQUEST_STATUSES } from '../domain/index.js';
 import { getEmployeeLeaveOverview } from '../services/leaveOverviewService.js';
+import {
+  getLeaveRequestDetails,
+  withdrawLeaveRequest,
+} from '../services/leaveRequestService.js';
 import { useSessionStore } from '../stores/sessionStore.js';
 
 const session = useSessionStore();
 const route = useRoute();
 const selectedStatus = ref('all');
-const requestCreated = computed(() => route.query.created === '1');
+const dataVersion = ref(0);
+const selectedRequestId = ref('');
+const detailsOpen = ref(false);
+const actionError = ref('');
+const feedbackMessage = ref('');
+const requestCreated = computed(
+  () => route.query.created === '1' && !feedbackMessage.value,
+);
 
-const leaveOverview = computed(() =>
-  getEmployeeLeaveOverview(
+const leaveOverview = computed(() => {
+  void dataVersion.value;
+
+  return getEmployeeLeaveOverview(
     session.currentCompany.value?.id,
     session.currentEmployee.value?.id,
-  ),
-);
+  );
+});
+
+const selectedRequest = computed(() => {
+  void dataVersion.value;
+
+  return getLeaveRequestDetails(
+    session.currentCompany.value?.id,
+    session.currentEmployee.value?.id,
+    selectedRequestId.value,
+  );
+});
 
 const statusOptions = computed(() => {
   const overview = leaveOverview.value;
@@ -61,6 +86,37 @@ const filteredRequests = computed(() => {
     (request) => request.status === selectedStatus.value,
   );
 });
+
+function openRequestDetails(requestId) {
+  selectedRequestId.value = requestId;
+  actionError.value = '';
+  detailsOpen.value = true;
+}
+
+function closeRequestDetails() {
+  detailsOpen.value = false;
+  actionError.value = '';
+}
+
+function handleWithdraw(requestId) {
+  actionError.value = '';
+
+  const result = withdrawLeaveRequest(
+    session.currentCompany.value?.id,
+    session.currentEmployee.value?.id,
+    requestId,
+  );
+
+  if (!result.success) {
+    actionError.value = result.error;
+
+    return;
+  }
+
+  dataVersion.value += 1;
+  detailsOpen.value = false;
+  feedbackMessage.value = 'Your pending leave request was withdrawn.';
+}
 </script>
 
 <template>
@@ -96,6 +152,13 @@ const filteredRequests = computed(() => {
       role="status"
     >
       Your leave request was submitted and is waiting for approval.
+    </p>
+    <p
+      v-if="feedbackMessage"
+      class="mt-6 border-l-2 border-info bg-info-soft px-4 py-3 text-sm text-info"
+      role="status"
+    >
+      {{ feedbackMessage }}
     </p>
 
     <section
@@ -186,6 +249,9 @@ const filteredRequests = computed(() => {
                 >
                   Status
                 </th>
+                <th scope="col" class="px-5 py-3">
+                  <span class="sr-only">Actions</span>
+                </th>
               </tr>
             </thead>
             <tbody class="divide-y divide-line">
@@ -209,6 +275,15 @@ const filteredRequests = computed(() => {
                   <StatusBadge :tone="request.statusTone">
                     {{ request.statusLabel }}
                   </StatusBadge>
+                </td>
+                <td class="px-5 py-4 text-right">
+                  <AppButton
+                    variant="secondary"
+                    size="small"
+                    @click="openRequestDetails(request.id)"
+                  >
+                    Details
+                  </AppButton>
                 </td>
               </tr>
             </tbody>
@@ -291,5 +366,13 @@ const filteredRequests = computed(() => {
         </article>
       </aside>
     </section>
+
+    <LeaveRequestDetailsModal
+      :open="detailsOpen"
+      :request="selectedRequest"
+      :error="actionError"
+      @close="closeRequestDetails"
+      @withdraw="handleWithdraw"
+    />
   </main>
 </template>

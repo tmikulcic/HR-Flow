@@ -98,7 +98,7 @@ function normalizeValues(values) {
   };
 }
 
-function validateRequest(values) {
+function validateRequest(companyId, employeeId, values, context, today) {
   const errors = {};
 
   if (!Object.values(LEAVE_TYPES).includes(values.type)) {
@@ -109,6 +109,8 @@ function validateRequest(values) {
     errors.startDate = 'Start date is required.';
   } else if (!isValidDate(values.startDate)) {
     errors.startDate = 'Enter a valid start date.';
+  } else if (values.startDate < today) {
+    errors.startDate = 'Start date cannot be in the past.';
   }
 
   if (!values.endDate) {
@@ -128,11 +130,40 @@ function validateRequest(values) {
     errors.reason = 'Reason is required.';
   }
 
+  if (!errors.startDate && !errors.endDate) {
+    const overlappingRequest = leaveRequestRepository
+      .getAllByCompany(companyId)
+      .find(
+        (request) =>
+          request.employeeId === employeeId &&
+          [
+            LEAVE_REQUEST_STATUSES.PENDING,
+            LEAVE_REQUEST_STATUSES.APPROVED,
+          ].includes(request.status) &&
+          values.startDate <= request.endDate &&
+          values.endDate >= request.startDate,
+      );
+
+    if (overlappingRequest) {
+      errors.startDate = 'These dates overlap with an existing leave request.';
+    }
+
+    const workingDays = countWorkingDays(values.startDate, values.endDate);
+    const availableDays = Math.max(
+      context.balance.remainingDays - context.balance.pendingDays,
+      0,
+    );
+
+    if (values.type === LEAVE_TYPES.ANNUAL && workingDays > availableDays) {
+      errors.endDate = `Only ${availableDays} annual leave days are available.`;
+    }
+  }
+
   return errors;
 }
 
-export function getLeaveRequestContext(companyId, employeeId) {
-  const overview = getEmployeeLeaveOverview(companyId, employeeId);
+export function getLeaveRequestContext(companyId, employeeId, today) {
+  const overview = getEmployeeLeaveOverview(companyId, employeeId, today);
 
   if (!overview) {
     return null;
@@ -153,8 +184,13 @@ export function getLeaveRequestContext(companyId, employeeId) {
   };
 }
 
-export function getLeaveRequestPreview(companyId, employeeId, formValues) {
-  const context = getLeaveRequestContext(companyId, employeeId);
+export function getLeaveRequestPreview(
+  companyId,
+  employeeId,
+  formValues,
+  today,
+) {
+  const context = getLeaveRequestContext(companyId, employeeId, today);
   const values = normalizeValues(formValues);
   const workingDays = countWorkingDays(values.startDate, values.endDate);
   const affectsAnnualBalance = values.type === LEAVE_TYPES.ANNUAL;
@@ -163,18 +199,28 @@ export function getLeaveRequestPreview(companyId, employeeId, formValues) {
     return null;
   }
 
+  const availableDays = Math.max(
+    context.balance.remainingDays - context.balance.pendingDays,
+    0,
+  );
+
   return {
     workingDays,
     affectsAnnualBalance,
-    currentRemainingDays: context.balance.remainingDays,
+    currentRemainingDays: availableDays,
     remainingAfterApproval: affectsAnnualBalance
-      ? context.balance.remainingDays - workingDays
-      : context.balance.remainingDays,
+      ? availableDays - workingDays
+      : availableDays,
   };
 }
 
-export function saveLeaveRequest(companyId, employeeId, formValues) {
-  const context = getLeaveRequestContext(companyId, employeeId);
+export function saveLeaveRequest(
+  companyId,
+  employeeId,
+  formValues,
+  today = new Date().toISOString().slice(0, 10),
+) {
+  const context = getLeaveRequestContext(companyId, employeeId, today);
 
   if (!context) {
     return {
@@ -193,7 +239,7 @@ export function saveLeaveRequest(companyId, employeeId, formValues) {
   }
 
   const values = normalizeValues(formValues);
-  const errors = validateRequest(values);
+  const errors = validateRequest(companyId, employeeId, values, context, today);
 
   if (Object.keys(errors).length) {
     return { success: false, errors, request: null };
@@ -216,4 +262,55 @@ export function saveLeaveRequest(companyId, employeeId, formValues) {
   });
 
   return { success: true, errors: {}, request };
+}
+
+export function getLeaveRequestDetails(companyId, employeeId, requestId) {
+  const overview = getEmployeeLeaveOverview(companyId, employeeId);
+  const request = overview?.requests.find((item) => item.id === requestId);
+
+  if (!request) {
+    return null;
+  }
+
+  const reviewer = employeeRepository.getById(request.managerId);
+
+  return {
+    ...request,
+    reviewerName:
+      reviewer?.companyId === companyId
+        ? `${reviewer.firstName} ${reviewer.lastName}`
+        : 'Not assigned',
+    canWithdraw: request.status === LEAVE_REQUEST_STATUSES.PENDING,
+  };
+}
+
+export function withdrawLeaveRequest(companyId, employeeId, requestId) {
+  const request = leaveRequestRepository.getById(requestId);
+
+  if (
+    !request ||
+    request.companyId !== companyId ||
+    request.employeeId !== employeeId
+  ) {
+    return {
+      success: false,
+      error: 'Leave request could not be found.',
+      request: null,
+    };
+  }
+
+  if (request.status !== LEAVE_REQUEST_STATUSES.PENDING) {
+    return {
+      success: false,
+      error: 'Only a pending request can be withdrawn.',
+      request: null,
+    };
+  }
+
+  const updatedRequest = leaveRequestRepository.update(requestId, {
+    status: LEAVE_REQUEST_STATUSES.WITHDRAWN,
+    decidedAt: new Date().toISOString(),
+  });
+
+  return { success: true, error: '', request: updatedRequest };
 }
