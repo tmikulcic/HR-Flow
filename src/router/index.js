@@ -100,7 +100,7 @@ const routes = [
         component: TeamPage,
         meta: {
           title: 'My team',
-          subtitle: 'Engineering team overview',
+          subtitle: 'Direct reports and availability',
           permission: PERMISSIONS.VIEW_TEAM,
         },
       },
