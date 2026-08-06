@@ -7,7 +7,7 @@ import {
 } from '../repositories/index.js';
 
 export const LOCAL_SESSION_KEY = 'hr-flow.session';
-export const DEMO_USER_ID = 'user-olivia';
+export const DEMO_USER_ID = 'user-marcus';
 
 const SESSION_VERSION = 1;
 

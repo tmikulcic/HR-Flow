@@ -6,11 +6,13 @@ import AppInput from '../components/AppInput.vue';
 import BrandLogo from '../components/BrandLogo.vue';
 import {
   DEMO_CREDENTIALS,
+  getDemoAccounts,
   signInWithCredentials,
 } from '../services/authService.js';
 
 const route = useRoute();
 const router = useRouter();
+const demoAccounts = getDemoAccounts();
 
 const email = ref(DEMO_CREDENTIALS.email);
 const password = ref('');
@@ -180,9 +182,20 @@ function handleForgotPassword() {
         </form>
 
         <div class="mt-8 border-t border-line pt-5 text-xs text-muted">
-          <p class="font-semibold text-ink">Demo credentials</p>
-          <p class="mt-1">{{ DEMO_CREDENTIALS.email }}</p>
-          <p>Password: {{ DEMO_CREDENTIALS.password }}</p>
+          <p class="font-semibold text-ink">Demo accounts</p>
+          <p class="mt-1">Use password: {{ DEMO_CREDENTIALS.password }}</p>
+          <div class="mt-3 grid gap-1.5">
+            <button
+              v-for="account in demoAccounts"
+              :key="account.email"
+              type="button"
+              class="flex items-center justify-between gap-4 text-left hover:text-brand"
+              @click="email = account.email"
+            >
+              <span>{{ account.email }}</span>
+              <span class="text-subtle">{{ account.role }}</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>

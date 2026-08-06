@@ -38,7 +38,7 @@ const TYPE_DETAILS = Object.freeze({
   [NOTIFICATION_TYPES.USER_INVITATION]: {
     icon: 'settings',
     preference: 'employeeUpdates',
-    link: '/administration',
+    link: '/dashboard',
   },
 });
 
