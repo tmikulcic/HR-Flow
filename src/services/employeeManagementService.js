@@ -1,6 +1,7 @@
 import {
   EMPLOYMENT_STATUSES,
   EMPLOYMENT_TYPES,
+  NOTIFICATION_TYPES,
   USER_ACCESS_STATUSES,
   USER_ROLE_LABELS,
   USER_ROLES,
@@ -10,6 +11,7 @@ import {
   teamRepository,
   userRepository,
 } from '../repositories/index.js';
+import { createNotification } from './notificationService.js';
 
 const EMPLOYMENT_TYPE_LABELS = Object.freeze({
   [EMPLOYMENT_TYPES.FULL_TIME]: 'Full-time',
@@ -244,10 +246,22 @@ export function saveEmployee(companyId, employeeId, formValues) {
       employeeRepository.update(employeeId, { userId });
     }
 
+    const updatedEmployee = employeeRepository.getById(employeeId);
+
+    createNotification({
+      companyId,
+      userId: updatedEmployee.userId,
+      type: NOTIFICATION_TYPES.EMPLOYEE_UPDATE,
+      title: 'Employee profile updated',
+      message: 'Your employee information was updated in HR-Flow.',
+      relatedEntityType: 'employee',
+      relatedEntityId: employeeId,
+    });
+
     return {
       success: true,
       errors: {},
-      employee: employeeRepository.getById(employeeId),
+      employee: updatedEmployee,
     };
   }
 
@@ -268,6 +282,16 @@ export function saveEmployee(companyId, employeeId, formValues) {
     accessStatus: USER_ACCESS_STATUSES.ACTIVE,
     employeeId: newEmployeeId,
     createdAt: new Date().toISOString(),
+  });
+
+  createNotification({
+    companyId,
+    userId: newUserId,
+    type: NOTIFICATION_TYPES.EMPLOYEE_UPDATE,
+    title: 'Employee profile created',
+    message: 'Your employee profile is ready in HR-Flow.',
+    relatedEntityType: 'employee',
+    relatedEntityId: newEmployeeId,
   });
 
   return { success: true, errors: {}, employee };

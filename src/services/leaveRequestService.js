@@ -1,6 +1,7 @@
 import {
   LEAVE_REQUEST_STATUSES,
   LEAVE_TYPES,
+  NOTIFICATION_TYPES,
   USER_ROLES,
 } from '../domain/index.js';
 import {
@@ -9,6 +10,7 @@ import {
   userRepository,
 } from '../repositories/index.js';
 import { getEmployeeLeaveOverview } from './leaveOverviewService.js';
+import { createNotification } from './notificationService.js';
 
 const DAY_IN_MILLISECONDS = 86_400_000;
 
@@ -178,6 +180,7 @@ export function getLeaveRequestContext(companyId, employeeId, today) {
       ? {
           id: reviewer.id,
           fullName: `${reviewer.firstName} ${reviewer.lastName}`,
+          userId: reviewer.userId,
         }
       : null,
     balance: overview.balance,
@@ -260,8 +263,28 @@ export function saveLeaveRequest(
     createdAt: new Date().toISOString(),
     decidedAt: null,
   });
+  const leaveType = LEAVE_TYPE_OPTIONS.find(
+    (option) => option.value === request.type,
+  );
+  const notification = createNotification({
+    companyId,
+    userId: context.reviewer.userId,
+    type: NOTIFICATION_TYPES.LEAVE_REQUEST,
+    title:
+      request.type === LEAVE_TYPES.SICK
+        ? 'New sick leave request'
+        : 'New leave request',
+    message: `${context.employee.fullName} requested ${
+      request.workingDays
+    } ${request.workingDays === 1 ? 'day' : 'days'} of ${(
+      leaveType?.label ?? 'leave'
+    ).toLowerCase()}.`,
+    relatedEntityType: 'leaveRequest',
+    relatedEntityId: request.id,
+    createdAt: request.createdAt,
+  });
 
-  return { success: true, errors: {}, request };
+  return { success: true, errors: {}, request, notification };
 }
 
 export function getLeaveRequestDetails(companyId, employeeId, requestId) {

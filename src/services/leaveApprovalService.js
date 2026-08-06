@@ -6,9 +6,12 @@ import {
 import {
   employeeRepository,
   leaveRequestRepository,
-  notificationRepository,
   teamRepository,
 } from '../repositories/index.js';
+import {
+  createNotification,
+  notificationDataVersion,
+} from './notificationService.js';
 
 const DECISION_DETAILS = Object.freeze({
   [LEAVE_REQUEST_STATUSES.APPROVED]: {
@@ -26,10 +29,6 @@ const LEAVE_TYPE_LABELS = Object.freeze({
   [LEAVE_TYPES.SICK]: 'Sick leave',
   [LEAVE_TYPES.OTHER]: 'Other leave',
 });
-
-function createId() {
-  return `notification-${globalThis.crypto.randomUUID()}`;
-}
 
 function parseDate(date) {
   return new Date(`${date}T12:00:00`);
@@ -195,6 +194,14 @@ export function getLeaveApprovalData(
   };
 }
 
+export function getPendingApprovalCount(companyId, managerId) {
+  void notificationDataVersion.value;
+
+  return (
+    getLeaveApprovalData(companyId, managerId)?.pendingRequests.length ?? 0
+  );
+}
+
 function validateAnnualBalance(companyId, request, employee) {
   if (request.type !== LEAVE_TYPES.ANNUAL) {
     return '';
@@ -288,8 +295,7 @@ export function decideLeaveRequest(
   const decisionLabel = DECISION_DETAILS[decision].label.toLowerCase();
   const typeLabel = LEAVE_TYPE_LABELS[request.type] ?? 'Other leave';
   const notification = employee.userId
-    ? notificationRepository.add({
-        id: createId(),
+    ? createNotification({
         companyId,
         userId: employee.userId,
         type: NOTIFICATION_TYPES.LEAVE_DECISION,

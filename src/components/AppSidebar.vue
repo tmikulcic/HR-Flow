@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from 'vue';
 import { hasPermission, PERMISSIONS } from '../domain/index.js';
+import { getPendingApprovalCount } from '../services/leaveApprovalService.js';
+import { getUnreadNotificationCount } from '../services/notificationService.js';
 import { useSessionStore } from '../stores/sessionStore.js';
 import { useRouter } from 'vue-router';
 import AppIcon from './AppIcon.vue';
@@ -50,14 +52,12 @@ const workspaceItems = [
     label: 'Approvals',
     to: '/approvals',
     icon: 'approvals',
-    badge: 3,
     permission: PERMISSIONS.REVIEW_LEAVE_REQUESTS,
   },
   {
     label: 'Notifications',
     to: '/notifications',
     icon: 'bell',
-    badge: 4,
     permission: PERMISSIONS.VIEW_NOTIFICATIONS,
   },
 ];
@@ -71,11 +71,28 @@ const administrationItems = [
   },
 ];
 
-const visibleWorkspaceItems = computed(() =>
-  workspaceItems.filter((item) =>
-    hasPermission(session.currentRole.value, item.permission),
-  ),
-);
+const visibleWorkspaceItems = computed(() => {
+  const pendingApprovals = getPendingApprovalCount(
+    session.currentCompany.value?.id,
+    session.currentEmployee.value?.id,
+  );
+  const unreadNotifications = getUnreadNotificationCount(
+    session.currentCompany.value?.id,
+    session.currentUser.value?.id,
+  );
+
+  return workspaceItems
+    .filter((item) => hasPermission(session.currentRole.value, item.permission))
+    .map((item) => ({
+      ...item,
+      badge:
+        item.to === '/approvals'
+          ? pendingApprovals
+          : item.to === '/notifications'
+            ? unreadNotifications
+            : 0,
+    }));
+});
 
 const visibleAdministrationItems = computed(() =>
   administrationItems.filter((item) =>

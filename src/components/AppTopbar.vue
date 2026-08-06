@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import { getUnreadNotificationCount } from '../services/notificationService.js';
 import { useSessionStore } from '../stores/sessionStore.js';
 import AppIcon from './AppIcon.vue';
 import Avatar from './Avatar.vue';
@@ -28,6 +29,19 @@ const currentEmployeeName = computed(() => {
 
   return session.currentUser.value?.email ?? 'HR-Flow user';
 });
+
+const unreadNotificationCount = computed(() =>
+  getUnreadNotificationCount(
+    session.currentCompany.value?.id,
+    session.currentUser.value?.id,
+  ),
+);
+
+const notificationAriaLabel = computed(() =>
+  unreadNotificationCount.value
+    ? `Notifications, ${unreadNotificationCount.value} unread`
+    : 'Notifications',
+);
 </script>
 
 <template>
@@ -55,10 +69,11 @@ const currentEmployeeName = computed(() => {
       <RouterLink
         to="/notifications"
         class="relative grid size-9 place-items-center rounded-control border border-line-strong bg-surface text-muted hover:bg-surface-soft"
-        aria-label="Notifications"
+        :aria-label="notificationAriaLabel"
       >
         <AppIcon name="bell" :size="17" />
         <span
+          v-if="unreadNotificationCount"
           class="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-danger"
           aria-hidden="true"
         />
