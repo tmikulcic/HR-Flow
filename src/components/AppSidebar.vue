@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { hasPermission, PERMISSIONS } from '../domain/index.js';
 import { getPendingApprovalCount } from '../services/leaveApprovalService.js';
 import { getUnreadNotificationCount } from '../services/notificationService.js';
@@ -9,13 +9,15 @@ import AppIcon from './AppIcon.vue';
 import Avatar from './Avatar.vue';
 import BrandLogo from './BrandLogo.vue';
 
-defineProps({
+const props = defineProps({
   open: Boolean,
 });
 
 const emit = defineEmits(['close', 'navigate']);
 const session = useSessionStore();
 const router = useRouter();
+const sidebar = ref(null);
+const closeButton = ref(null);
 
 const workspaceItems = [
   {
@@ -124,20 +126,73 @@ function handleSignOut() {
   emit('close');
   router.replace({ name: 'login' });
 }
+
+function getFocusableElements() {
+  return [
+    ...(sidebar.value?.querySelectorAll(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ) ?? []),
+  ].filter(
+    (element) =>
+      !element.hasAttribute('hidden') && element.getClientRects().length > 0,
+  );
+}
+
+function handleKeydown(event) {
+  if (!props.open) {
+    return;
+  }
+
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    emit('close');
+
+    return;
+  }
+
+  if (event.key !== 'Tab') {
+    return;
+  }
+
+  const focusableElements = getFocusableElements();
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements.at(-1);
+
+  if (event.shiftKey && document.activeElement === firstElement) {
+    event.preventDefault();
+    lastElement?.focus();
+  } else if (!event.shiftKey && document.activeElement === lastElement) {
+    event.preventDefault();
+    firstElement?.focus();
+  }
+}
+
+watch(
+  () => props.open,
+  async (open) => {
+    if (open) {
+      await nextTick();
+      closeButton.value?.focus();
+    }
+  },
+);
 </script>
 
 <template>
   <aside
+    ref="sidebar"
     :class="[
       'fixed inset-y-0 left-0 z-40 flex w-[244px] flex-col bg-sidebar px-4 py-5 text-white transition-transform duration-200',
       'lg:static lg:translate-x-0',
       open ? 'translate-x-0' : '-translate-x-full',
     ]"
     aria-label="Primary navigation"
+    @keydown="handleKeydown"
   >
     <div class="flex items-center justify-between px-2 pb-7">
       <BrandLogo />
       <button
+        ref="closeButton"
         type="button"
         class="grid size-8 place-items-center rounded-control text-[#bdd2cc] hover:bg-white/10 hover:text-white lg:hidden"
         aria-label="Close navigation"
@@ -163,6 +218,7 @@ function handleSignOut() {
             >
               <a
                 :href="href"
+                :aria-current="isActive ? 'page' : undefined"
                 :class="[
                   'flex min-h-10 items-center gap-3 rounded-nav px-3 py-2 text-sm font-medium transition-colors',
                   isActive
@@ -209,6 +265,7 @@ function handleSignOut() {
             >
               <a
                 :href="href"
+                :aria-current="isActive ? 'page' : undefined"
                 :class="[
                   'flex min-h-10 items-center gap-3 rounded-nav px-3 py-2 text-sm font-medium transition-colors',
                   isActive

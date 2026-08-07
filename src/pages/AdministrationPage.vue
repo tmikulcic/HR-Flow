@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
 import AppButton from '../components/AppButton.vue';
 import AppInput from '../components/AppInput.vue';
 import AppSelect from '../components/AppSelect.vue';
@@ -77,6 +77,31 @@ const summaryBorderClasses = [
 
 function clearCompanyErrors() {
   Object.keys(companyErrors).forEach((key) => delete companyErrors[key]);
+}
+
+function handleTabKeydown(event, currentIndex) {
+  let nextIndex = null;
+
+  if (event.key === 'ArrowRight') {
+    nextIndex = (currentIndex + 1) % tabs.length;
+  } else if (event.key === 'ArrowLeft') {
+    nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+  } else if (event.key === 'Home') {
+    nextIndex = 0;
+  } else if (event.key === 'End') {
+    nextIndex = tabs.length - 1;
+  }
+
+  if (nextIndex === null) {
+    return;
+  }
+
+  event.preventDefault();
+  const tabList = event.currentTarget.parentElement;
+  activeTab.value = tabs[nextIndex].value;
+  nextTick(() => {
+    tabList?.querySelector(`[data-tab-index="${nextIndex}"]`)?.focus();
+  });
 }
 
 function refreshData(message) {
@@ -187,11 +212,18 @@ watch(
       <nav
         class="flex overflow-x-auto border border-line bg-surface px-4"
         aria-label="Administration sections"
+        role="tablist"
       >
         <button
-          v-for="tab in tabs"
+          v-for="(tab, index) in tabs"
           :key="tab.value"
+          :id="`administration-tab-${tab.value}`"
           type="button"
+          role="tab"
+          :aria-selected="activeTab === tab.value"
+          :aria-controls="`administration-panel-${tab.value}`"
+          :tabindex="activeTab === tab.value ? 0 : -1"
+          :data-tab-index="index"
           :class="[
             '-mb-px min-h-12 whitespace-nowrap border-b-2 px-4 text-sm font-semibold transition-colors',
             activeTab === tab.value
@@ -199,6 +231,7 @@ watch(
               : 'border-transparent text-muted hover:text-ink',
           ]"
           @click="activeTab = tab.value"
+          @keydown="handleTabKeydown($event, index)"
         >
           {{ tab.label }}
         </button>
@@ -206,7 +239,11 @@ watch(
 
       <div
         v-if="activeTab === 'users'"
+        id="administration-panel-users"
         class="border-x border-b border-line bg-surface"
+        role="tabpanel"
+        aria-labelledby="administration-tab-users"
+        tabindex="0"
       >
         <header
           class="grid gap-4 border-b border-line px-5 py-4 md:grid-cols-[minmax(0,1fr)_280px_auto] md:items-end"
@@ -324,7 +361,11 @@ watch(
 
       <div
         v-else-if="activeTab === 'teams'"
+        id="administration-panel-teams"
         class="border-x border-b border-line bg-surface"
+        role="tabpanel"
+        aria-labelledby="administration-tab-teams"
+        tabindex="0"
       >
         <header
           class="flex flex-col gap-4 border-b border-line px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
@@ -396,7 +437,14 @@ watch(
         </div>
       </div>
 
-      <div v-else class="border-x border-b border-line bg-surface">
+      <div
+        v-else
+        id="administration-panel-company"
+        class="border-x border-b border-line bg-surface"
+        role="tabpanel"
+        aria-labelledby="administration-tab-company"
+        tabindex="0"
+      >
         <header class="border-b border-line px-5 py-4">
           <h3>Company information</h3>
           <p class="mt-1 text-xs text-muted">
@@ -411,6 +459,7 @@ watch(
           <p
             v-if="companyErrors.form"
             class="border-l-2 border-danger bg-danger-soft px-3 py-2 text-xs text-danger"
+            role="alert"
           >
             {{ companyErrors.form }}
           </p>
@@ -479,4 +528,12 @@ watch(
       @saved="handleTeamSaved"
     />
   </main>
+
+  <EmptyState
+    v-else
+    class="mx-auto w-full max-w-[1480px]"
+    icon="settings"
+    title="Administration unavailable"
+    description="Administrator access and a valid company are required."
+  />
 </template>

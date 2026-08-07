@@ -77,7 +77,12 @@ const inputClasses = computed(() => [
       :class="inputClasses"
       @input="emit('update:modelValue', $event.target.value)"
     />
-    <p v-if="props.error" :id="messageId" class="text-xs text-danger">
+    <p
+      v-if="props.error"
+      :id="messageId"
+      class="text-xs text-danger"
+      role="alert"
+    >
       {{ props.error }}
     </p>
     <p v-else-if="props.hint" :id="messageId" class="text-xs text-subtle">

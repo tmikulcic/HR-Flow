@@ -189,7 +189,7 @@ function handleForgotPassword() {
               v-for="account in demoAccounts"
               :key="account.email"
               type="button"
-              class="flex items-center justify-between gap-4 text-left hover:text-brand"
+              class="flex flex-col gap-0.5 text-left hover:text-brand sm:flex-row sm:items-center sm:justify-between sm:gap-4"
               @click="email = account.email"
             >
               <span>{{ account.email }}</span>
@@ -245,7 +245,7 @@ function handleForgotPassword() {
 
       <div class="relative flex items-center gap-4 text-xs text-[#8fb1a9]">
         <span class="h-px w-16 bg-[#8ee0ca]/50" aria-hidden="true" />
-        Northstar Labs · Internal workspace
+        Secure internal workspace
       </div>
     </section>
   </main>

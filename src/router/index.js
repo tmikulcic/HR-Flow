@@ -40,7 +40,7 @@ const routes = [
         component: DashboardPage,
         meta: {
           title: 'Dashboard',
-          subtitle: 'Northstar Labs',
+          subtitle: 'Company overview',
           permission: PERMISSIONS.VIEW_DASHBOARD,
         },
       },

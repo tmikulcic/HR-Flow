@@ -103,6 +103,7 @@ watch(
       <p
         v-if="errors.form"
         class="border-l-2 border-danger bg-danger-soft px-3 py-2 text-xs text-danger"
+        role="alert"
       >
         {{ errors.form }}
       </p>

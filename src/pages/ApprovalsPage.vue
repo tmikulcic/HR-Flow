@@ -331,4 +331,12 @@ function handleDecision({ requestId, decision, comment }) {
       @submit="handleDecision"
     />
   </main>
+
+  <EmptyState
+    v-else
+    class="mx-auto w-full max-w-[1480px]"
+    icon="approvals"
+    title="Approvals unavailable"
+    description="A managed team is required before leave requests can be reviewed."
+  />
 </template>

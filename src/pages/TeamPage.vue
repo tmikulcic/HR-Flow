@@ -120,7 +120,7 @@ watch(
         </div>
 
         <div
-          class="grid grid-cols-[36px_minmax(180px,1fr)_36px] items-center gap-2"
+          class="grid w-full grid-cols-[36px_minmax(0,1fr)_36px] items-center gap-2"
         >
           <button
             type="button"
@@ -251,4 +251,12 @@ watch(
       />
     </section>
   </main>
+
+  <EmptyState
+    v-else
+    class="mx-auto w-full max-w-[1480px]"
+    icon="team"
+    title="Team unavailable"
+    description="No managed team is assigned to this account."
+  />
 </template>

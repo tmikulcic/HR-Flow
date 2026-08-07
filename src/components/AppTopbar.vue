@@ -53,7 +53,7 @@ const notificationAriaLabel = computed(() =>
         type="button"
         class="grid size-9 shrink-0 place-items-center rounded-control border border-line-strong text-muted hover:bg-surface-soft lg:hidden"
         aria-label="Open navigation"
-        @click="$emit('open-navigation')"
+        @click="$emit('open-navigation', $event)"
       >
         <AppIcon name="menu" :size="19" />
       </button>

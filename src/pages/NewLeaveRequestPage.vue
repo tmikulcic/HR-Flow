@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import AppButton from '../components/AppButton.vue';
 import AppInput from '../components/AppInput.vue';
 import AppSelect from '../components/AppSelect.vue';
+import EmptyState from '../components/EmptyState.vue';
 import { LEAVE_TYPES } from '../domain/index.js';
 import {
   getLeaveRequestContext,
@@ -106,6 +107,7 @@ function handleSubmit() {
           <p
             v-if="errors.form"
             class="border-l-2 border-danger bg-danger-soft px-3 py-2 text-xs text-danger"
+            role="alert"
           >
             {{ errors.form }}
           </p>
@@ -241,4 +243,12 @@ function handleSubmit() {
       </aside>
     </section>
   </main>
+
+  <EmptyState
+    v-else
+    class="mx-auto w-full max-w-[1180px]"
+    icon="calendar"
+    title="Leave request unavailable"
+    description="An employee profile and assigned reviewer are required."
+  />
 </template>

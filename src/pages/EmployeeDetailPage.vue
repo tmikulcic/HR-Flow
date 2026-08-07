@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import AppIcon from '../components/AppIcon.vue';
 import Avatar from '../components/Avatar.vue';
@@ -45,6 +45,38 @@ function handleEmployeeSaved() {
   dataVersion.value += 1;
   session.initializeSession();
 }
+
+function handleTabKeydown(event, currentIndex) {
+  let nextIndex = null;
+
+  if (event.key === 'ArrowRight') {
+    nextIndex = (currentIndex + 1) % tabs.length;
+  } else if (event.key === 'ArrowLeft') {
+    nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+  } else if (event.key === 'Home') {
+    nextIndex = 0;
+  } else if (event.key === 'End') {
+    nextIndex = tabs.length - 1;
+  }
+
+  if (nextIndex === null) {
+    return;
+  }
+
+  event.preventDefault();
+  const tabList = event.currentTarget.parentElement;
+  activeTab.value = tabs[nextIndex].id;
+  nextTick(() => {
+    tabList?.querySelector(`[data-tab-index="${nextIndex}"]`)?.focus();
+  });
+}
+
+watch(
+  () => route.params.employeeId,
+  () => {
+    activeTab.value = 'overview';
+  },
+);
 </script>
 
 <template>
@@ -91,11 +123,21 @@ function handleEmployeeSaved() {
         </button>
       </section>
 
-      <nav class="mt-6 flex border-b border-line" aria-label="Profile sections">
+      <nav
+        class="mt-6 flex overflow-x-auto border-b border-line"
+        aria-label="Profile sections"
+        role="tablist"
+      >
         <button
-          v-for="tab in tabs"
+          v-for="(tab, index) in tabs"
           :key="tab.id"
+          :id="`profile-tab-${tab.id}`"
           type="button"
+          role="tab"
+          :aria-selected="activeTab === tab.id"
+          :aria-controls="`profile-panel-${tab.id}`"
+          :tabindex="activeTab === tab.id ? 0 : -1"
+          :data-tab-index="index"
           :class="[
             '-mb-px border-b-2 px-4 py-3 text-sm font-semibold transition-colors',
             activeTab === tab.id
@@ -103,6 +145,7 @@ function handleEmployeeSaved() {
               : 'border-transparent text-muted hover:text-ink',
           ]"
           @click="activeTab = tab.id"
+          @keydown="handleTabKeydown($event, index)"
         >
           {{ tab.label }}
         </button>
@@ -110,7 +153,11 @@ function handleEmployeeSaved() {
 
       <section
         v-if="activeTab === 'overview'"
+        id="profile-panel-overview"
         class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.7fr)]"
+        role="tabpanel"
+        aria-labelledby="profile-tab-overview"
+        tabindex="0"
       >
         <div class="grid content-start gap-6">
           <article class="border border-line bg-surface">
@@ -301,19 +348,28 @@ function handleEmployeeSaved() {
 
       <section
         v-else-if="activeTab === 'time'"
+        id="profile-panel-time"
         class="mt-6 overflow-x-auto border border-line bg-surface"
+        role="tabpanel"
+        aria-labelledby="profile-tab-time"
+        tabindex="0"
       >
         <table
           v-if="profile.timeRecords.length"
           class="w-full min-w-[760px] border-collapse text-left"
         >
+          <caption class="sr-only">
+            Employee weekly time records
+          </caption>
           <thead class="border-b border-line bg-surface-soft">
             <tr>
-              <th class="px-5 py-3 text-xs text-muted">Date</th>
-              <th class="px-5 py-3 text-xs text-muted">Working time</th>
-              <th class="px-5 py-3 text-xs text-muted">Break</th>
-              <th class="px-5 py-3 text-xs text-muted">Total</th>
-              <th class="px-5 py-3 text-xs text-muted">Status</th>
+              <th scope="col" class="px-5 py-3 text-xs text-muted">Date</th>
+              <th scope="col" class="px-5 py-3 text-xs text-muted">
+                Working time
+              </th>
+              <th scope="col" class="px-5 py-3 text-xs text-muted">Break</th>
+              <th scope="col" class="px-5 py-3 text-xs text-muted">Total</th>
+              <th scope="col" class="px-5 py-3 text-xs text-muted">Status</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-line">
@@ -345,19 +401,28 @@ function handleEmployeeSaved() {
 
       <section
         v-else
+        id="profile-panel-leave"
         class="mt-6 overflow-x-auto border border-line bg-surface"
+        role="tabpanel"
+        aria-labelledby="profile-tab-leave"
+        tabindex="0"
       >
         <table
           v-if="profile.leaveHistory.length"
           class="w-full min-w-[820px] border-collapse text-left"
         >
+          <caption class="sr-only">
+            Employee leave request history
+          </caption>
           <thead class="border-b border-line bg-surface-soft">
             <tr>
-              <th class="px-5 py-3 text-xs text-muted">Type</th>
-              <th class="px-5 py-3 text-xs text-muted">Dates</th>
-              <th class="px-5 py-3 text-xs text-muted">Days</th>
-              <th class="px-5 py-3 text-xs text-muted">Submitted</th>
-              <th class="px-5 py-3 text-xs text-muted">Status</th>
+              <th scope="col" class="px-5 py-3 text-xs text-muted">Type</th>
+              <th scope="col" class="px-5 py-3 text-xs text-muted">Dates</th>
+              <th scope="col" class="px-5 py-3 text-xs text-muted">Days</th>
+              <th scope="col" class="px-5 py-3 text-xs text-muted">
+                Submitted
+              </th>
+              <th scope="col" class="px-5 py-3 text-xs text-muted">Status</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-line">

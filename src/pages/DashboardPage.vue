@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import AppIcon from '../components/AppIcon.vue';
 import Avatar from '../components/Avatar.vue';
+import EmptyState from '../components/EmptyState.vue';
 import StatusBadge from '../components/StatusBadge.vue';
 import { getDashboardData } from '../services/dashboardService.js';
 import { useSessionStore } from '../stores/sessionStore.js';
@@ -244,4 +245,12 @@ const kpiBorderClasses = [
       </p>
     </section>
   </main>
+
+  <EmptyState
+    v-else
+    class="mx-auto w-full max-w-[1480px]"
+    icon="inbox"
+    title="Dashboard unavailable"
+    description="Workspace data could not be loaded. Sign out and try again."
+  />
 </template>

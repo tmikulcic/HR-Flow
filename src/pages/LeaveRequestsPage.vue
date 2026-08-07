@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import AppButton from '../components/AppButton.vue';
 import AppIcon from '../components/AppIcon.vue';
 import AppSelect from '../components/AppSelect.vue';
+import EmptyState from '../components/EmptyState.vue';
 import LeaveRequestDetailsModal from '../components/LeaveRequestDetailsModal.vue';
 import StatusBadge from '../components/StatusBadge.vue';
 import { LEAVE_REQUEST_STATUSES } from '../domain/index.js';
@@ -375,4 +376,12 @@ function handleWithdraw(requestId) {
       @withdraw="handleWithdraw"
     />
   </main>
+
+  <EmptyState
+    v-else
+    class="mx-auto w-full max-w-[1480px]"
+    icon="calendar"
+    title="Leave data unavailable"
+    description="An employee profile is required to view leave information."
+  />
 </template>

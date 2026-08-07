@@ -137,9 +137,14 @@ watch(
             </p>
           </div>
 
-          <div class="inline-flex self-start bg-surface-soft p-1 sm:self-auto">
+          <div
+            class="inline-flex self-start bg-surface-soft p-1 sm:self-auto"
+            role="group"
+            aria-label="Filter notifications"
+          >
             <button
               type="button"
+              :aria-pressed="selectedFilter === 'all'"
               :class="[
                 'rounded-control px-3 py-1.5 text-xs font-semibold transition-colors',
                 selectedFilter === 'all'
@@ -152,6 +157,7 @@ watch(
             </button>
             <button
               type="button"
+              :aria-pressed="selectedFilter === 'unread'"
               :class="[
                 'rounded-control px-3 py-1.5 text-xs font-semibold transition-colors',
                 selectedFilter === 'unread'
@@ -171,7 +177,7 @@ watch(
             :key="notification.id"
             type="button"
             :class="[
-              'grid w-full gap-3 px-5 py-4 text-left transition-colors sm:grid-cols-[40px_minmax(0,1fr)_auto] sm:items-center',
+              'grid w-full grid-cols-[40px_minmax(0,1fr)] gap-3 px-5 py-4 text-left transition-colors sm:grid-cols-[40px_minmax(0,1fr)_auto] sm:items-center',
               notification.isRead
                 ? 'bg-surface hover:bg-surface-soft'
                 : 'bg-brand-soft/35 hover:bg-brand-soft/55',
@@ -204,7 +210,9 @@ watch(
               </span>
             </span>
 
-            <time class="text-[11px] text-subtle sm:text-right">
+            <time
+              class="col-start-2 text-[11px] text-subtle sm:col-auto sm:text-right"
+            >
               {{ notification.dateLabel }}
             </time>
           </button>

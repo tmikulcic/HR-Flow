@@ -38,6 +38,13 @@ const selectId = computed(() => props.id || generatedId);
 const errorId = computed(() =>
   props.error ? `${selectId.value}-error` : undefined,
 );
+const selectClasses = computed(() => [
+  'w-full rounded-control border bg-surface px-3 py-2 text-sm outline-none transition-colors',
+  'disabled:cursor-not-allowed disabled:bg-surface-soft disabled:text-subtle',
+  props.error
+    ? 'border-danger focus:border-danger'
+    : 'border-line-strong focus:border-brand',
+]);
 </script>
 
 <template>
@@ -60,7 +67,7 @@ const errorId = computed(() =>
       :required="props.required"
       :aria-invalid="Boolean(props.error)"
       :aria-describedby="errorId"
-      class="w-full rounded-control border border-line-strong bg-surface px-3 py-2 text-sm outline-none transition-colors focus:border-brand disabled:cursor-not-allowed disabled:bg-surface-soft disabled:text-subtle"
+      :class="selectClasses"
       @change="emit('update:modelValue', $event.target.value)"
     >
       <option v-if="props.placeholder" value="" disabled>
@@ -75,7 +82,12 @@ const errorId = computed(() =>
         {{ option.label }}
       </option>
     </select>
-    <p v-if="props.error" :id="errorId" class="text-xs text-danger">
+    <p
+      v-if="props.error"
+      :id="errorId"
+      class="text-xs text-danger"
+      role="alert"
+    >
       {{ props.error }}
     </p>
   </div>

@@ -388,12 +388,14 @@ watch(
           <p
             v-if="quickErrors.form"
             class="border-l-2 border-danger bg-danger-soft px-3 py-2 text-xs text-danger"
+            role="alert"
           >
             {{ quickErrors.form }}
           </p>
           <p
             v-if="successMessage"
             class="border-l-2 border-success bg-success-soft px-3 py-2 text-xs text-success"
+            role="status"
           >
             {{ successMessage }}
           </p>
@@ -424,7 +426,11 @@ watch(
           <p class="text-xs leading-5 text-subtle">
             A standard 30-minute break is applied to quick entries.
           </p>
-          <p v-if="quickErrors.breakMinutes" class="text-xs text-danger">
+          <p
+            v-if="quickErrors.breakMinutes"
+            class="text-xs text-danger"
+            role="alert"
+          >
             {{ quickErrors.breakMinutes }}
           </p>
 
