@@ -182,14 +182,14 @@ watch(
   <aside
     ref="sidebar"
     :class="[
-      'fixed inset-y-0 left-0 z-40 flex w-[244px] flex-col bg-sidebar px-4 py-5 text-white transition-transform duration-200',
-      'lg:static lg:translate-x-0',
+      'fixed inset-y-0 left-0 z-40 flex h-dvh w-[244px] flex-col overflow-hidden bg-sidebar px-4 py-5 text-white transition-transform duration-200',
+      'lg:sticky lg:top-0 lg:bottom-auto lg:self-start lg:translate-x-0',
       open ? 'translate-x-0' : '-translate-x-full',
     ]"
     aria-label="Primary navigation"
     @keydown="handleKeydown"
   >
-    <div class="flex items-center justify-between px-2 pb-7">
+    <div class="flex shrink-0 items-center justify-between px-2 pb-7">
       <BrandLogo />
       <button
         ref="closeButton"
@@ -202,7 +202,7 @@ watch(
       </button>
     </div>
 
-    <nav class="grid gap-6">
+    <nav class="grid min-h-0 flex-1 content-start gap-6 overflow-y-auto">
       <div>
         <p
           class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8fb1a9]"
@@ -293,7 +293,7 @@ watch(
     </nav>
 
     <div
-      class="mt-auto flex items-center gap-3 border-t border-white/10 px-2 pt-4"
+      class="mt-auto flex shrink-0 items-center gap-3 border-t border-white/10 px-2 pt-4"
     >
       <Avatar :name="currentEmployeeName" size="small" />
       <div class="min-w-0">

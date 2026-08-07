@@ -54,9 +54,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-canvas lg:grid lg:grid-cols-[244px_minmax(0,1fr)]"
-  >
+  <div class="min-h-dvh bg-canvas lg:grid lg:grid-cols-[244px_minmax(0,1fr)]">
     <a
       href="#main-content"
       class="fixed left-4 top-4 z-[60] -translate-y-20 rounded-control bg-ink px-4 py-2 text-sm font-semibold text-white transition-transform focus:translate-y-0"
