@@ -145,8 +145,12 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const session = useSessionStore();
+
+  if (!session.isInitialized.value) {
+    await session.initializeSession();
+  }
 
   if (to.meta.guestOnly && session.isAuthenticated.value) {
     return { name: 'dashboard' };

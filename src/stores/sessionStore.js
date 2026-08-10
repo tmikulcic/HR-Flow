@@ -1,5 +1,7 @@
 import { computed, readonly, reactive } from 'vue';
+import { onAuthStateChanged, signOut as firebaseSignOut } from 'firebase/auth';
 import { USER_ACCESS_STATUSES } from '../domain/index.js';
+import { firebaseAuth } from '../firebase.js';
 import {
   companyRepository,
   employeeRepository,
@@ -7,75 +9,45 @@ import {
 } from '../repositories/index.js';
 
 export const LOCAL_SESSION_KEY = 'hr-flow.session';
-export const DEMO_USER_ID = 'user-marcus';
-
-const SESSION_VERSION = 1;
 
 const state = reactive({
+  authUid: null,
   user: null,
   employee: null,
   company: null,
   initialized: false,
 });
 
+let initializationPromise = null;
+
 function clearState() {
+  state.authUid = null;
   state.user = null;
   state.employee = null;
   state.company = null;
 }
 
-function getSessionFromStorage(storage) {
-  const storedSession = storage.getItem(LOCAL_SESSION_KEY);
-
-  if (!storedSession) {
-    return null;
-  }
-
-  try {
-    const session = JSON.parse(storedSession);
-
-    if (session.version === SESSION_VERSION && session.userId) {
-      return session;
-    }
-  } catch {
-    // Invalid session data is removed below.
-  }
-
-  storage.removeItem(LOCAL_SESSION_KEY);
-
-  return null;
-}
-
-function getStoredSession() {
-  return (
-    getSessionFromStorage(globalThis.localStorage) ??
-    getSessionFromStorage(globalThis.sessionStorage)
-  );
-}
-
-function clearStoredSession() {
+function clearLegacySession() {
   globalThis.localStorage.removeItem(LOCAL_SESSION_KEY);
   globalThis.sessionStorage.removeItem(LOCAL_SESSION_KEY);
 }
 
-function saveSession(userId, rememberMe) {
-  clearStoredSession();
+function getUserByEmail(email) {
+  const normalizedEmail = email.trim().toLowerCase();
 
-  const storage = rememberMe
-    ? globalThis.localStorage
-    : globalThis.sessionStorage;
-
-  storage.setItem(
-    LOCAL_SESSION_KEY,
-    JSON.stringify({
-      version: SESSION_VERSION,
-      userId,
-    }),
-  );
+  return userRepository
+    .getAll()
+    .find((user) => user.email.toLowerCase() === normalizedEmail);
 }
 
-function loadUser(userId) {
-  const user = userRepository.getById(userId);
+export function connectAuthenticatedUser(firebaseUser) {
+  clearState();
+
+  if (!firebaseUser?.email) {
+    return false;
+  }
+
+  const user = getUserByEmail(firebaseUser.email);
 
   if (!user || user.accessStatus !== USER_ACCESS_STATUSES.ACTIVE) {
     return false;
@@ -90,6 +62,7 @@ function loadUser(userId) {
     return false;
   }
 
+  state.authUid = firebaseUser.uid;
   state.user = user;
   state.employee = employee;
   state.company = company;
@@ -97,41 +70,52 @@ function loadUser(userId) {
   return true;
 }
 
-export function initializeSession() {
-  const storedSession = getStoredSession();
+function handleAuthState(firebaseUser) {
+  const isAuthenticated = connectAuthenticatedUser(firebaseUser);
 
-  clearState();
-
-  if (storedSession && !loadUser(storedSession.userId)) {
-    clearStoredSession();
+  if (firebaseUser && !isAuthenticated) {
+    void firebaseSignOut(firebaseAuth);
   }
 
   state.initialized = true;
 
-  return state.user !== null;
+  return isAuthenticated;
 }
 
-export function signInUser(userId, rememberMe = true) {
-  if (!loadUser(userId)) {
-    return false;
+export function initializeSession() {
+  clearLegacySession();
+
+  if (state.initialized) {
+    return Promise.resolve(handleAuthState(firebaseAuth.currentUser));
   }
 
-  saveSession(userId, rememberMe);
+  if (!initializationPromise) {
+    initializationPromise = new Promise((resolve) => {
+      onAuthStateChanged(
+        firebaseAuth,
+        (firebaseUser) => {
+          resolve(handleAuthState(firebaseUser));
+        },
+        () => {
+          clearState();
+          state.initialized = true;
+          resolve(false);
+        },
+      );
+    });
+  }
 
-  return true;
+  return initializationPromise;
 }
 
-export function signInDemoUser(rememberMe = true) {
-  return signInUser(DEMO_USER_ID, rememberMe);
-}
-
-export function signOut() {
-  clearStoredSession();
+export async function signOut() {
+  await firebaseSignOut(firebaseAuth);
   clearState();
 }
 
 const sessionStore = Object.freeze({
   state: readonly(state),
+  currentAuthUid: computed(() => state.authUid),
   currentUser: computed(() => state.user),
   currentEmployee: computed(() => state.employee),
   currentCompany: computed(() => state.company),
@@ -139,8 +123,6 @@ const sessionStore = Object.freeze({
   isAuthenticated: computed(() => state.user !== null),
   isInitialized: computed(() => state.initialized),
   initializeSession,
-  signInUser,
-  signInDemoUser,
   signOut,
 });
 

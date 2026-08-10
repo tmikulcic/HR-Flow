@@ -121,10 +121,10 @@ function handleNavigation(event, navigate) {
   emit('navigate');
 }
 
-function handleSignOut() {
-  session.signOut();
+async function handleSignOut() {
+  await session.signOut();
   emit('close');
-  router.replace({ name: 'login' });
+  await router.replace({ name: 'login' });
 }
 
 function getFocusableElements() {

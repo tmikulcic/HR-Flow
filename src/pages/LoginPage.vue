@@ -7,6 +7,7 @@ import BrandLogo from '../components/BrandLogo.vue';
 import {
   DEMO_CREDENTIALS,
   getDemoAccounts,
+  requestPasswordReset,
   signInWithCredentials,
 } from '../services/authService.js';
 
@@ -19,6 +20,8 @@ const password = ref('');
 const rememberMe = ref(true);
 const formMessage = ref('');
 const formMessageType = ref('error');
+const isSubmitting = ref(false);
+const isResettingPassword = ref(false);
 
 const errors = reactive({
   email: '',
@@ -43,6 +46,20 @@ function validateForm() {
   return !errors.email && !errors.password;
 }
 
+function validateEmail() {
+  errors.email = '';
+  errors.password = '';
+  formMessage.value = '';
+
+  if (!email.value.trim()) {
+    errors.email = 'Work email is required.';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    errors.email = 'Enter a valid work email.';
+  }
+
+  return !errors.email;
+}
+
 function getRedirectPath() {
   const redirect = route.query.redirect;
 
@@ -57,16 +74,18 @@ function getRedirectPath() {
   return '/dashboard';
 }
 
-function handleSubmit() {
+async function handleSubmit() {
   if (!validateForm()) {
     return;
   }
 
-  const result = signInWithCredentials(
+  isSubmitting.value = true;
+  const result = await signInWithCredentials(
     email.value,
     password.value,
     rememberMe.value,
   );
+  isSubmitting.value = false;
 
   if (!result.success) {
     formMessageType.value = 'error';
@@ -75,13 +94,28 @@ function handleSubmit() {
     return;
   }
 
-  router.replace(getRedirectPath());
+  await router.replace(getRedirectPath());
 }
 
-function handleForgotPassword() {
+async function handleForgotPassword() {
+  if (!validateEmail()) {
+    return;
+  }
+
+  isResettingPassword.value = true;
+  const result = await requestPasswordReset(email.value);
+  isResettingPassword.value = false;
+
+  if (!result.success) {
+    formMessageType.value = 'error';
+    formMessage.value = result.error;
+
+    return;
+  }
+
   formMessageType.value = 'info';
   formMessage.value =
-    'Password reset will be available after Firebase is connected.';
+    'If an account exists for this email, a password reset link has been sent.';
 }
 </script>
 
@@ -115,6 +149,7 @@ function handleForgotPassword() {
             autocomplete="email"
             placeholder="name@company.com"
             :error="errors.email"
+            :disabled="isSubmitting || isResettingPassword"
             required
           />
 
@@ -125,6 +160,7 @@ function handleForgotPassword() {
             autocomplete="current-password"
             placeholder="Enter your password"
             :error="errors.password"
+            :disabled="isSubmitting || isResettingPassword"
             required
           />
 
@@ -136,6 +172,7 @@ function handleForgotPassword() {
                 v-model="rememberMe"
                 type="checkbox"
                 class="peer sr-only"
+                :disabled="isSubmitting || isResettingPassword"
               />
               <span
                 class="grid size-[18px] shrink-0 place-items-center rounded-badge border border-line-strong bg-surface text-transparent transition-colors peer-checked:border-brand peer-checked:bg-brand peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-brand/20"
@@ -158,16 +195,17 @@ function handleForgotPassword() {
 
             <button
               type="button"
-              class="text-xs font-semibold text-brand hover:text-brand-dark"
+              class="text-xs font-semibold text-brand hover:text-brand-dark disabled:cursor-not-allowed disabled:text-subtle"
+              :disabled="isSubmitting || isResettingPassword"
               @click="handleForgotPassword"
             >
-              Forgot password?
+              {{ isResettingPassword ? 'Sending...' : 'Forgot password?' }}
             </button>
           </div>
 
           <p
             v-if="formMessage"
-            role="alert"
+            :role="formMessageType === 'error' ? 'alert' : 'status'"
             :class="[
               'border-l-2 px-3 py-2 text-xs',
               formMessageType === 'error'
@@ -178,7 +216,13 @@ function handleForgotPassword() {
             {{ formMessage }}
           </p>
 
-          <AppButton type="submit" class="mt-1 w-full"> Sign in </AppButton>
+          <AppButton
+            type="submit"
+            class="mt-1 w-full"
+            :disabled="isSubmitting || isResettingPassword"
+          >
+            {{ isSubmitting ? 'Signing in...' : 'Sign in' }}
+          </AppButton>
         </form>
 
         <div class="mt-8 border-t border-line pt-5 text-xs text-muted">
@@ -189,7 +233,8 @@ function handleForgotPassword() {
               v-for="account in demoAccounts"
               :key="account.email"
               type="button"
-              class="flex flex-col gap-0.5 text-left hover:text-brand sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+              class="flex flex-col gap-0.5 text-left hover:text-brand disabled:cursor-not-allowed disabled:text-subtle sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+              :disabled="isSubmitting || isResettingPassword"
               @click="email = account.email"
             >
               <span>{{ account.email }}</span>

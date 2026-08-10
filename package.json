@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-vue": "latest",
+    "firebase": "^12.17.1",
     "vite": "latest",
     "vue": "latest",
     "vue-router": "^4.6.4"
