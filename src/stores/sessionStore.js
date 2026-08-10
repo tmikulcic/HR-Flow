@@ -3,9 +3,12 @@ import { onAuthStateChanged, signOut as firebaseSignOut } from 'firebase/auth';
 import { USER_ACCESS_STATUSES } from '../domain/index.js';
 import { firebaseAuth } from '../firebase.js';
 import {
+  clearFirestoreDatabase,
   companyRepository,
   employeeRepository,
+  initializeFirestoreDatabase,
   userRepository,
+  waitForPendingFirestoreWrites,
 } from '../repositories/index.js';
 
 export const LOCAL_SESSION_KEY = 'hr-flow.session';
@@ -70,7 +73,24 @@ export function connectAuthenticatedUser(firebaseUser) {
   return true;
 }
 
-function handleAuthState(firebaseUser) {
+async function handleAuthState(firebaseUser) {
+  if (!firebaseUser) {
+    clearFirestoreDatabase();
+    clearState();
+    state.initialized = true;
+
+    return false;
+  }
+
+  try {
+    await initializeFirestoreDatabase();
+  } catch {
+    clearState();
+    state.initialized = true;
+
+    return false;
+  }
+
   const isAuthenticated = connectAuthenticatedUser(firebaseUser);
 
   if (firebaseUser && !isAuthenticated) {
@@ -86,15 +106,15 @@ export function initializeSession() {
   clearLegacySession();
 
   if (state.initialized) {
-    return Promise.resolve(handleAuthState(firebaseAuth.currentUser));
+    return handleAuthState(firebaseAuth.currentUser);
   }
 
   if (!initializationPromise) {
     initializationPromise = new Promise((resolve) => {
       onAuthStateChanged(
         firebaseAuth,
-        (firebaseUser) => {
-          resolve(handleAuthState(firebaseUser));
+        async (firebaseUser) => {
+          resolve(await handleAuthState(firebaseUser));
         },
         () => {
           clearState();
@@ -109,7 +129,14 @@ export function initializeSession() {
 }
 
 export async function signOut() {
+  try {
+    await waitForPendingFirestoreWrites();
+  } catch {
+    // A failed data sync must not prevent the user from signing out.
+  }
+
   await firebaseSignOut(firebaseAuth);
+  clearFirestoreDatabase();
   clearState();
 }
 

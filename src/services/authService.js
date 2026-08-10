@@ -8,7 +8,10 @@ import {
 } from 'firebase/auth';
 import { USER_ACCESS_STATUSES } from '../domain/index.js';
 import { firebaseAuth } from '../firebase.js';
-import { userRepository } from '../repositories/index.js';
+import {
+  initializeFirestoreDatabase,
+  userRepository,
+} from '../repositories/index.js';
 import { connectAuthenticatedUser } from '../stores/sessionStore.js';
 
 function normalizeEmail(email) {
@@ -45,21 +48,6 @@ function getAuthenticationError(error) {
 
 export async function signInWithCredentials(email, password, rememberMe) {
   const normalizedEmail = normalizeEmail(email);
-  const applicationUser = getApplicationUser(normalizedEmail);
-
-  if (!applicationUser) {
-    return {
-      success: false,
-      error: 'The email or password you entered is incorrect.',
-    };
-  }
-
-  if (applicationUser.accessStatus !== USER_ACCESS_STATUSES.ACTIVE) {
-    return {
-      success: false,
-      error: 'This account is currently unavailable.',
-    };
-  }
 
   try {
     await setPersistence(
@@ -73,12 +61,31 @@ export async function signInWithCredentials(email, password, rememberMe) {
       password,
     );
 
-    if (!connectAuthenticatedUser(credential.user)) {
+    try {
+      await initializeFirestoreDatabase();
+    } catch {
       await firebaseSignOut(firebaseAuth);
 
       return {
         success: false,
-        error: 'This account is not connected to an HR-Flow user.',
+        error: 'Unable to load HR-Flow data from Firestore.',
+      };
+    }
+
+    const applicationUser = getApplicationUser(normalizedEmail);
+
+    if (
+      !applicationUser ||
+      applicationUser.accessStatus !== USER_ACCESS_STATUSES.ACTIVE ||
+      !connectAuthenticatedUser(credential.user)
+    ) {
+      await firebaseSignOut(firebaseAuth);
+
+      return {
+        success: false,
+        error: applicationUser
+          ? 'This account is currently unavailable.'
+          : 'This account is not connected to an HR-Flow user.',
       };
     }
 
@@ -93,11 +100,6 @@ export async function signInWithCredentials(email, password, rememberMe) {
 
 export async function requestPasswordReset(email) {
   const normalizedEmail = normalizeEmail(email);
-  const applicationUser = getApplicationUser(normalizedEmail);
-
-  if (!applicationUser) {
-    return { success: true, error: '' };
-  }
 
   try {
     await sendPasswordResetEmail(firebaseAuth, normalizedEmail);

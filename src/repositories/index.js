@@ -1,15 +1,18 @@
-import { createLocalRepository } from './createLocalRepository.js';
+import { createFirestoreRepository } from './createFirestoreRepository.js';
 
 export {
-  initializeLocalDatabase,
-  LOCAL_DATABASE_KEY,
-  resetLocalDatabase,
-} from './localDatabase.js';
+  clearFirestoreDatabase,
+  initializeFirestoreDatabase,
+  seedFirestoreDatabase,
+  waitForPendingFirestoreWrites,
+} from './firestoreDatabase.js';
 
-export const companyRepository = createLocalRepository('companies');
-export const userRepository = createLocalRepository('users');
-export const employeeRepository = createLocalRepository('employees');
-export const teamRepository = createLocalRepository('teams');
-export const timeEntryRepository = createLocalRepository('timeEntries');
-export const leaveRequestRepository = createLocalRepository('leaveRequests');
-export const notificationRepository = createLocalRepository('notifications');
+export const companyRepository = createFirestoreRepository('companies');
+export const userRepository = createFirestoreRepository('users');
+export const employeeRepository = createFirestoreRepository('employees');
+export const teamRepository = createFirestoreRepository('teams');
+export const timeEntryRepository = createFirestoreRepository('timeEntries');
+export const leaveRequestRepository =
+  createFirestoreRepository('leaveRequests');
+export const notificationRepository =
+  createFirestoreRepository('notifications');

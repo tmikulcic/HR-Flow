@@ -1,21 +1,23 @@
+import { deleteDoc, doc, setDoc } from 'firebase/firestore';
+import { firestoreDb } from '../firebase.js';
 import {
   DATABASE_COLLECTIONS,
-  getLocalDatabase,
-  saveLocalDatabase,
-} from './localDatabase.js';
+  getFirestoreCollection,
+  queueFirestoreWrite,
+} from './firestoreDatabase.js';
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-export function createLocalRepository(collectionName) {
+export function createFirestoreRepository(collectionName) {
   if (!DATABASE_COLLECTIONS.includes(collectionName)) {
-    throw new Error(`Unknown local database collection: ${collectionName}`);
+    throw new Error(`Unknown Firestore collection: ${collectionName}`);
   }
 
   return Object.freeze({
     getAll() {
-      return getLocalDatabase()[collectionName];
+      return clone(getFirestoreCollection(collectionName));
     },
 
     getAllByCompany(companyId) {
@@ -35,24 +37,26 @@ export function createLocalRepository(collectionName) {
         throw new Error(`A new ${collectionName} record must have an ID.`);
       }
 
-      const database = getLocalDatabase();
+      const collectionRecords = getFirestoreCollection(collectionName);
 
-      if (database[collectionName].some((item) => item.id === record.id)) {
+      if (collectionRecords.some((item) => item.id === record.id)) {
         throw new Error(
           `A ${collectionName} record with ID "${record.id}" already exists.`,
         );
       }
 
       const newRecord = clone(record);
-      database[collectionName].push(newRecord);
-      saveLocalDatabase(database);
+      collectionRecords.push(newRecord);
+      queueFirestoreWrite(() =>
+        setDoc(doc(firestoreDb, collectionName, newRecord.id), newRecord),
+      );
 
       return clone(newRecord);
     },
 
     update(id, changes) {
-      const database = getLocalDatabase();
-      const recordIndex = database[collectionName].findIndex(
+      const collectionRecords = getFirestoreCollection(collectionName);
+      const recordIndex = collectionRecords.findIndex(
         (record) => record.id === id,
       );
 
@@ -60,7 +64,7 @@ export function createLocalRepository(collectionName) {
         return null;
       }
 
-      const currentRecord = database[collectionName][recordIndex];
+      const currentRecord = collectionRecords[recordIndex];
       const updatedRecord = {
         ...currentRecord,
         ...clone(changes),
@@ -71,15 +75,17 @@ export function createLocalRepository(collectionName) {
         updatedRecord.companyId = currentRecord.companyId;
       }
 
-      database[collectionName][recordIndex] = updatedRecord;
-      saveLocalDatabase(database);
+      collectionRecords[recordIndex] = updatedRecord;
+      queueFirestoreWrite(() =>
+        setDoc(doc(firestoreDb, collectionName, id), updatedRecord),
+      );
 
       return clone(updatedRecord);
     },
 
     remove(id) {
-      const database = getLocalDatabase();
-      const recordIndex = database[collectionName].findIndex(
+      const collectionRecords = getFirestoreCollection(collectionName);
+      const recordIndex = collectionRecords.findIndex(
         (record) => record.id === id,
       );
 
@@ -87,8 +93,10 @@ export function createLocalRepository(collectionName) {
         return false;
       }
 
-      database[collectionName].splice(recordIndex, 1);
-      saveLocalDatabase(database);
+      collectionRecords.splice(recordIndex, 1);
+      queueFirestoreWrite(() =>
+        deleteDoc(doc(firestoreDb, collectionName, id)),
+      );
 
       return true;
     },

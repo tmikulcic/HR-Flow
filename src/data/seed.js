@@ -9,8 +9,6 @@ import {
   USER_ROLES,
 } from '../domain/index.js';
 
-export const SEED_VERSION = 1;
-
 const COMPANY_ID = 'company-northstar';
 
 /**
@@ -18,8 +16,6 @@ const COMPANY_ID = 'company-northstar';
  * All relationships use stable IDs so the same data can later be moved to Firebase.
  */
 export const seedDatabase = {
-  version: SEED_VERSION,
-
   /** @type {import('../domain/models.js').Company[]} */
   companies: [
     {
