@@ -12,6 +12,7 @@ import {
   userRepository,
 } from '../repositories/index.js';
 import { createNotification } from './notificationService.js';
+import { saveMembershipForUser } from './membershipService.js';
 
 const EMPLOYMENT_TYPE_LABELS = Object.freeze({
   [EMPLOYMENT_TYPES.FULL_TIME]: 'Full-time',
@@ -234,7 +235,7 @@ export function saveEmployee(companyId, employeeId, formValues) {
     } else {
       const userId = createId('user');
 
-      userRepository.add({
+      const newUser = userRepository.add({
         id: userId,
         companyId,
         email: values.email,
@@ -243,6 +244,7 @@ export function saveEmployee(companyId, employeeId, formValues) {
         employeeId,
         createdAt: new Date().toISOString(),
       });
+      saveMembershipForUser(newUser);
       employeeRepository.update(employeeId, { userId });
     }
 
@@ -274,7 +276,7 @@ export function saveEmployee(companyId, employeeId, formValues) {
     ...employeeRecord,
   });
 
-  userRepository.add({
+  const user = userRepository.add({
     id: newUserId,
     companyId,
     email: values.email,
@@ -283,6 +285,7 @@ export function saveEmployee(companyId, employeeId, formValues) {
     employeeId: newEmployeeId,
     createdAt: new Date().toISOString(),
   });
+  saveMembershipForUser(user);
 
   createNotification({
     companyId,

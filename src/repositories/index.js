@@ -2,6 +2,7 @@ import { createFirestoreRepository } from './createFirestoreRepository.js';
 
 export {
   clearFirestoreDatabase,
+  createMembershipRecord,
   initializeFirestoreDatabase,
   seedFirestoreDatabase,
   waitForPendingFirestoreWrites,
@@ -16,3 +17,4 @@ export const leaveRequestRepository =
   createFirestoreRepository('leaveRequests');
 export const notificationRepository =
   createFirestoreRepository('notifications');
+export const membershipRepository = createFirestoreRepository('memberships');

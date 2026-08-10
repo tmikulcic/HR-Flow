@@ -13,6 +13,7 @@ import {
   userRepository,
 } from '../repositories/index.js';
 import { createNotification } from './notificationService.js';
+import { saveMembershipForUser } from './membershipService.js';
 
 const ACCESS_DETAILS = Object.freeze({
   [USER_ACCESS_STATUSES.ACTIVE]: {
@@ -257,6 +258,7 @@ export function inviteUser(companyId, administratorUserId, formValues) {
     employeeId,
     createdAt,
   });
+  saveMembershipForUser(user);
 
   createNotification({
     companyId,

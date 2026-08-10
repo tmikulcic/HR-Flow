@@ -6,24 +6,12 @@ import {
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
 } from 'firebase/auth';
-import { USER_ACCESS_STATUSES } from '../domain/index.js';
 import { firebaseAuth } from '../firebase.js';
-import {
-  initializeFirestoreDatabase,
-  userRepository,
-} from '../repositories/index.js';
+import { initializeFirestoreDatabase } from '../repositories/index.js';
 import { connectAuthenticatedUser } from '../stores/sessionStore.js';
 
 function normalizeEmail(email) {
   return email.trim().toLowerCase();
-}
-
-function getApplicationUser(email) {
-  const normalizedEmail = normalizeEmail(email);
-
-  return userRepository
-    .getAll()
-    .find((user) => user.email.toLowerCase() === normalizedEmail);
 }
 
 function getAuthenticationError(error) {
@@ -62,7 +50,7 @@ export async function signInWithCredentials(email, password, rememberMe) {
     );
 
     try {
-      await initializeFirestoreDatabase();
+      await initializeFirestoreDatabase(credential.user);
     } catch {
       await firebaseSignOut(firebaseAuth);
 
@@ -72,20 +60,12 @@ export async function signInWithCredentials(email, password, rememberMe) {
       };
     }
 
-    const applicationUser = getApplicationUser(normalizedEmail);
-
-    if (
-      !applicationUser ||
-      applicationUser.accessStatus !== USER_ACCESS_STATUSES.ACTIVE ||
-      !connectAuthenticatedUser(credential.user)
-    ) {
+    if (!connectAuthenticatedUser(credential.user)) {
       await firebaseSignOut(firebaseAuth);
 
       return {
         success: false,
-        error: applicationUser
-          ? 'This account is currently unavailable.'
-          : 'This account is not connected to an HR-Flow user.',
+        error: 'This account is currently unavailable.',
       };
     }
 

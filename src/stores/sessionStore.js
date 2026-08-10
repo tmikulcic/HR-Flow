@@ -7,6 +7,7 @@ import {
   companyRepository,
   employeeRepository,
   initializeFirestoreDatabase,
+  membershipRepository,
   userRepository,
   waitForPendingFirestoreWrites,
 } from '../repositories/index.js';
@@ -35,14 +36,6 @@ function clearLegacySession() {
   globalThis.sessionStorage.removeItem(LOCAL_SESSION_KEY);
 }
 
-function getUserByEmail(email) {
-  const normalizedEmail = email.trim().toLowerCase();
-
-  return userRepository
-    .getAll()
-    .find((user) => user.email.toLowerCase() === normalizedEmail);
-}
-
 export function connectAuthenticatedUser(firebaseUser) {
   clearState();
 
@@ -50,9 +43,19 @@ export function connectAuthenticatedUser(firebaseUser) {
     return false;
   }
 
-  const user = getUserByEmail(firebaseUser.email);
+  const membership = membershipRepository.getById(
+    firebaseUser.email.trim().toLowerCase(),
+  );
+  const user = membership
+    ? userRepository.getById(membership.userId)
+    : null;
 
-  if (!user || user.accessStatus !== USER_ACCESS_STATUSES.ACTIVE) {
+  if (
+    !membership ||
+    !user ||
+    user.companyId !== membership.companyId ||
+    user.accessStatus !== USER_ACCESS_STATUSES.ACTIVE
+  ) {
     return false;
   }
 
@@ -83,7 +86,7 @@ async function handleAuthState(firebaseUser) {
   }
 
   try {
-    await initializeFirestoreDatabase();
+    await initializeFirestoreDatabase(firebaseUser);
   } catch {
     clearState();
     state.initialized = true;

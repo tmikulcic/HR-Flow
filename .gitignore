@@ -4,6 +4,12 @@ node_modules/
 # Build output
 dist/
 
+# Firebase local files
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
 # Local notes
 notes/
 

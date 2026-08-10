@@ -1,0 +1,339 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email is string;
+    }
+
+    function membershipPath() {
+      return /databases/$(database)/documents/memberships/$(request.auth.token.email);
+    }
+
+    function hasMembership() {
+      return isSignedIn() && exists(membershipPath());
+    }
+
+    function membership() {
+      return get(membershipPath()).data;
+    }
+
+    function currentUserPath() {
+      return /databases/$(database)/documents/users/$(membership().userId);
+    }
+
+    function hasActiveAccess() {
+      return hasMembership()
+        && exists(currentUserPath())
+        && currentUser().accessStatus == 'active'
+        && currentUser().companyId == membership().companyId;
+    }
+
+    function currentUser() {
+      return get(currentUserPath()).data;
+    }
+
+    function currentUserId() {
+      return membership().userId;
+    }
+
+    function currentCompanyId() {
+      return membership().companyId;
+    }
+
+    function currentEmployeeId() {
+      return currentUser().employeeId;
+    }
+
+    function currentEmployeePath() {
+      return /databases/$(database)/documents/employees/$(currentEmployeeId());
+    }
+
+    function hasRole(role) {
+      return hasActiveAccess() && currentUser().role == role;
+    }
+
+    function isAdministrator() {
+      return hasRole('administrator');
+    }
+
+    function isHr() {
+      return hasRole('hr');
+    }
+
+    function isManager() {
+      return hasRole('manager');
+    }
+
+    function canManagePeople() {
+      return isAdministrator() || isHr();
+    }
+
+    function hasValidRole(data) {
+      return data.role in ['administrator', 'hr', 'manager', 'employee'];
+    }
+
+    function hasValidAccessStatus(data) {
+      return data.accessStatus in ['active', 'invited', 'disabled'];
+    }
+
+    function isSameCompany(data) {
+      return hasActiveAccess() && data.companyId == currentCompanyId();
+    }
+
+    function isApproverRole(role) {
+      return role in ['administrator', 'hr'];
+    }
+
+    function isApproverUser(userId) {
+      let userPath = /databases/$(database)/documents/users/$(userId);
+      return exists(userPath)
+        && get(userPath).data.companyId == currentCompanyId()
+        && isApproverRole(get(userPath).data.role);
+    }
+
+    function canAccessEmployeeData(data) {
+      return isSameCompany(data)
+        && (
+          canManagePeople()
+          || data.id == currentEmployeeId()
+          || (isManager() && data.managerId == currentEmployeeId())
+          || (
+            exists(currentEmployeePath())
+            && data.id == get(currentEmployeePath()).data.managerId
+          )
+          || isApproverUser(data.userId)
+        );
+    }
+
+    function canAccessTeamData(data) {
+      return isSameCompany(data)
+        && (
+          canManagePeople()
+          || data.id == get(currentEmployeePath()).data.teamId
+          || (isManager() && data.managerId == currentEmployeeId())
+        );
+    }
+
+    function isManagedEmployee(employeeId) {
+      let employeePath = /databases/$(database)/documents/employees/$(employeeId);
+      return isManager()
+        && exists(employeePath)
+        && get(employeePath).data.companyId == currentCompanyId()
+        && get(employeePath).data.managerId == currentEmployeeId();
+    }
+
+    function isManagedUser(data) {
+      return isManagedEmployee(data.employeeId);
+    }
+
+    function hasMatchingEmployeeManager(data) {
+      let employeePath = /databases/$(database)/documents/employees/$(data.employeeId);
+      return exists(employeePath)
+        && get(employeePath).data.companyId == currentCompanyId()
+        && data.managerId == get(employeePath).data.managerId;
+    }
+
+    match /memberships/{membershipId} {
+      allow read: if hasActiveAccess()
+        && membershipId == request.auth.token.email;
+
+      allow create: if canManagePeople()
+        && request.resource.data.id == membershipId
+        && request.resource.data.companyId == currentCompanyId()
+        && request.resource.data.keys().hasOnly(['id', 'userId', 'companyId'])
+        && exists(/databases/$(database)/documents/users/$(request.resource.data.userId))
+        && get(/databases/$(database)/documents/users/$(request.resource.data.userId)).data.companyId == currentCompanyId()
+        && get(/databases/$(database)/documents/users/$(request.resource.data.userId)).data.email == membershipId
+        && (
+          isAdministrator()
+          || get(/databases/$(database)/documents/users/$(request.resource.data.userId)).data.role != 'administrator'
+        );
+
+      allow update, delete: if false;
+    }
+
+    match /companies/{companyId} {
+      allow read: if hasActiveAccess() && companyId == currentCompanyId();
+      allow update: if isAdministrator()
+        && companyId == currentCompanyId()
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['name', 'timezone']);
+      allow create, delete: if false;
+    }
+
+    match /users/{userId} {
+      allow read: if isSameCompany(resource.data)
+        && (
+          canManagePeople()
+          || userId == currentUserId()
+          || isApproverRole(resource.data.role)
+          || isManagedUser(resource.data)
+        );
+
+      allow create: if canManagePeople()
+        && isSameCompany(request.resource.data)
+        && request.resource.data.id == userId
+        && hasValidRole(request.resource.data)
+        && hasValidAccessStatus(request.resource.data)
+        && (
+          isAdministrator()
+          || (
+            request.resource.data.role != 'administrator'
+            && request.resource.data.accessStatus == 'active'
+          )
+        );
+
+      allow update: if canManagePeople()
+        && isSameCompany(resource.data)
+        && isSameCompany(request.resource.data)
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.companyId == resource.data.companyId
+        && request.resource.data.employeeId == resource.data.employeeId
+        && request.resource.data.createdAt == resource.data.createdAt
+        && hasValidRole(request.resource.data)
+        && hasValidAccessStatus(request.resource.data)
+        && (
+          (
+            isAdministrator()
+            && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['email', 'role', 'accessStatus'])
+          )
+          || (
+            isHr()
+            && resource.data.role != 'administrator'
+            && request.resource.data.role != 'administrator'
+            && request.resource.data.accessStatus == resource.data.accessStatus
+            && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['email', 'role'])
+          )
+        );
+
+      allow delete: if false;
+    }
+
+    match /employees/{employeeId} {
+      allow read: if canAccessEmployeeData(resource.data);
+
+      allow create: if canManagePeople()
+        && isSameCompany(request.resource.data)
+        && request.resource.data.id == employeeId;
+
+      allow update: if canManagePeople()
+        && isSameCompany(resource.data)
+        && isSameCompany(request.resource.data)
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.companyId == resource.data.companyId;
+
+      allow delete: if false;
+    }
+
+    match /teams/{teamId} {
+      allow read: if canAccessTeamData(resource.data);
+      allow create: if isAdministrator()
+        && isSameCompany(request.resource.data)
+        && request.resource.data.id == teamId;
+      allow update: if isAdministrator()
+        && isSameCompany(resource.data)
+        && isSameCompany(request.resource.data)
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.companyId == resource.data.companyId;
+      allow delete: if false;
+    }
+
+    match /timeEntries/{entryId} {
+      allow read: if isSameCompany(resource.data)
+        && (
+          canManagePeople()
+          || resource.data.employeeId == currentEmployeeId()
+          || (isManager() && resource.data.managerId == currentEmployeeId())
+        );
+
+      allow create: if isSameCompany(request.resource.data)
+        && request.resource.data.id == entryId
+        && hasMatchingEmployeeManager(request.resource.data)
+        && (
+          canManagePeople()
+          || request.resource.data.employeeId == currentEmployeeId()
+        );
+
+      allow update: if isSameCompany(resource.data)
+        && isSameCompany(request.resource.data)
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.companyId == resource.data.companyId
+        && request.resource.data.employeeId == resource.data.employeeId
+        && hasMatchingEmployeeManager(request.resource.data)
+        && (
+          canManagePeople()
+          || resource.data.employeeId == currentEmployeeId()
+        );
+
+      allow delete: if false;
+    }
+
+    match /leaveRequests/{requestId} {
+      allow read: if isSameCompany(resource.data)
+        && (
+          canManagePeople()
+          || resource.data.employeeId == currentEmployeeId()
+          || (isManager() && resource.data.managerId == currentEmployeeId())
+        );
+
+      allow create: if isSameCompany(request.resource.data)
+        && request.resource.data.id == requestId
+        && request.resource.data.employeeId == currentEmployeeId()
+        && request.resource.data.status == 'pending';
+
+      allow update: if isSameCompany(resource.data)
+        && isSameCompany(request.resource.data)
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.companyId == resource.data.companyId
+        && request.resource.data.employeeId == resource.data.employeeId
+        && (
+          (
+            resource.data.employeeId == currentEmployeeId()
+            && resource.data.status == 'pending'
+            && request.resource.data.status == 'withdrawn'
+            && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['status', 'decidedAt'])
+          )
+          || (
+            isManager()
+            && resource.data.managerId == currentEmployeeId()
+            && resource.data.status == 'pending'
+            && request.resource.data.status in ['approved', 'declined']
+            && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['status', 'managerComment', 'decidedAt'])
+          )
+        );
+
+      allow delete: if false;
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isSameCompany(resource.data)
+        && resource.data.userId == currentUserId();
+
+      allow create: if isSameCompany(request.resource.data)
+        && request.resource.data.id == notificationId
+        && request.resource.data.isRead == false
+        && exists(/databases/$(database)/documents/users/$(request.resource.data.userId))
+        && get(/databases/$(database)/documents/users/$(request.resource.data.userId)).data.companyId == currentCompanyId();
+
+      allow update: if isSameCompany(resource.data)
+        && resource.data.userId == currentUserId()
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.companyId == resource.data.companyId
+        && request.resource.data.isRead == true
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['isRead']);
+
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

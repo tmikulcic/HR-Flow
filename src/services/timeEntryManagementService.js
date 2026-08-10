@@ -171,6 +171,7 @@ export function saveTimeEntry(companyId, employeeId, entryId, formValues) {
   const startMinutes = timeToMinutes(values.startTime);
   const endMinutes = timeToMinutes(values.endTime);
   const record = {
+    managerId: employee.managerId,
     date: values.date,
     startTime: values.startTime,
     endTime: values.endTime,

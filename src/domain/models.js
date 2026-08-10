@@ -57,6 +57,7 @@
  * @property {string} id
  * @property {string} companyId
  * @property {string} employeeId
+ * @property {string|null} managerId
  * @property {string} date
  * @property {string} startTime
  * @property {string} endTime
