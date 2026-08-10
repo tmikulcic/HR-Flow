@@ -5,17 +5,14 @@ import AppButton from '../components/AppButton.vue';
 import AppInput from '../components/AppInput.vue';
 import BrandLogo from '../components/BrandLogo.vue';
 import {
-  DEMO_CREDENTIALS,
-  getDemoAccounts,
   requestPasswordReset,
   signInWithCredentials,
 } from '../services/authService.js';
 
 const route = useRoute();
 const router = useRouter();
-const demoAccounts = getDemoAccounts();
 
-const email = ref(DEMO_CREDENTIALS.email);
+const email = ref('');
 const password = ref('');
 const rememberMe = ref(true);
 const formMessage = ref('');
@@ -225,23 +222,6 @@ async function handleForgotPassword() {
           </AppButton>
         </form>
 
-        <div class="mt-8 border-t border-line pt-5 text-xs text-muted">
-          <p class="font-semibold text-ink">Demo accounts</p>
-          <p class="mt-1">Use password: {{ DEMO_CREDENTIALS.password }}</p>
-          <div class="mt-3 grid gap-1.5">
-            <button
-              v-for="account in demoAccounts"
-              :key="account.email"
-              type="button"
-              class="flex flex-col gap-0.5 text-left hover:text-brand disabled:cursor-not-allowed disabled:text-subtle sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-              :disabled="isSubmitting || isResettingPassword"
-              @click="email = account.email"
-            >
-              <span>{{ account.email }}</span>
-              <span class="text-subtle">{{ account.role }}</span>
-            </button>
-          </div>
-        </div>
       </div>
     </section>
 

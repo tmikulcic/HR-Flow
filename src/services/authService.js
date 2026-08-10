@@ -6,22 +6,10 @@ import {
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
 } from 'firebase/auth';
-import { USER_ACCESS_STATUSES, USER_ROLE_LABELS } from '../domain/index.js';
+import { USER_ACCESS_STATUSES } from '../domain/index.js';
 import { firebaseAuth } from '../firebase.js';
 import { userRepository } from '../repositories/index.js';
 import { connectAuthenticatedUser } from '../stores/sessionStore.js';
-
-export const DEMO_CREDENTIALS = Object.freeze({
-  email: 'marcus.brown@northstar.io',
-  password: 'password',
-});
-
-const DEMO_USER_IDS = Object.freeze([
-  'user-marcus',
-  'user-olivia',
-  'user-daniel',
-  'user-james',
-]);
 
 function normalizeEmail(email) {
   return email.trim().toLowerCase();
@@ -53,15 +41,6 @@ function getAuthenticationError(error) {
     default:
       return 'Unable to sign in. Please try again.';
   }
-}
-
-export function getDemoAccounts() {
-  return DEMO_USER_IDS.map((userId) => userRepository.getById(userId))
-    .filter(Boolean)
-    .map((user) => ({
-      email: user.email,
-      role: USER_ROLE_LABELS[user.role],
-    }));
 }
 
 export async function signInWithCredentials(email, password, rememberMe) {
