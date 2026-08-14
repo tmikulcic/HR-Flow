@@ -44,7 +44,7 @@ const messageId = computed(() =>
 );
 
 const inputClasses = computed(() => [
-  'w-full rounded-control border bg-surface px-3 py-2 text-sm outline-none transition-colors',
+  'min-w-0 w-full rounded-control border bg-surface px-3 py-2 text-sm outline-none transition-colors',
   'placeholder:text-subtle disabled:cursor-not-allowed disabled:bg-surface-soft disabled:text-subtle',
   props.error
     ? 'border-danger focus:border-danger'
@@ -53,7 +53,7 @@ const inputClasses = computed(() => [
 </script>
 
 <template>
-  <div class="grid gap-1.5">
+  <div class="grid min-w-0 gap-1.5">
     <label
       v-if="props.label"
       :for="inputId"

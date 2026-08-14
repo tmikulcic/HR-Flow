@@ -79,7 +79,11 @@ watch(
     size="large"
     @close="emit('close')"
   >
-    <form id="employee-form" class="grid gap-6" @submit.prevent="handleSubmit">
+    <form
+      id="employee-form"
+      class="grid min-w-0 gap-6"
+      @submit.prevent="handleSubmit"
+    >
       <p
         v-if="errors.form"
         class="border-l-2 border-danger bg-danger-soft px-3 py-2 text-xs text-danger"
@@ -88,7 +92,7 @@ watch(
         {{ errors.form }}
       </p>
 
-      <fieldset>
+      <fieldset class="min-w-0">
         <legend
           class="mb-3 text-xs font-bold uppercase tracking-[0.1em] text-muted"
         >
@@ -118,7 +122,7 @@ watch(
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="min-w-0">
         <legend
           class="mb-3 text-xs font-bold uppercase tracking-[0.1em] text-muted"
         >
@@ -169,7 +173,7 @@ watch(
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="min-w-0">
         <legend
           class="mb-3 text-xs font-bold uppercase tracking-[0.1em] text-muted"
         >

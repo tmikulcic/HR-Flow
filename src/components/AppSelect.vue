@@ -39,7 +39,7 @@ const errorId = computed(() =>
   props.error ? `${selectId.value}-error` : undefined,
 );
 const selectClasses = computed(() => [
-  'w-full rounded-control border bg-surface px-3 py-2 text-sm outline-none transition-colors',
+  'min-w-0 w-full rounded-control border bg-surface px-3 py-2 text-sm outline-none transition-colors',
   'disabled:cursor-not-allowed disabled:bg-surface-soft disabled:text-subtle',
   props.error
     ? 'border-danger focus:border-danger'
@@ -48,7 +48,7 @@ const selectClasses = computed(() => [
 </script>
 
 <template>
-  <div class="grid gap-1.5">
+  <div class="grid min-w-0 gap-1.5">
     <label
       v-if="props.label"
       :for="selectId"

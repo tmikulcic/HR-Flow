@@ -158,7 +158,7 @@ watch(
 </script>
 
 <template>
-  <main class="mx-auto w-full max-w-[1480px]">
+  <main class="mx-auto w-full min-w-0 max-w-[1480px]">
     <section
       class="flex flex-col gap-5 border-b border-line pb-6 lg:flex-row lg:items-end lg:justify-between"
     >
@@ -251,11 +251,13 @@ watch(
 
     <div
       v-if="weeklyRecords"
-      class="mt-6 grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]"
+      class="mt-6 grid min-w-0 max-w-full items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]"
     >
-      <section class="border border-line bg-surface">
+      <section
+        class="min-w-0 max-w-full overflow-hidden border border-line bg-surface"
+      >
         <header
-          class="grid grid-cols-[40px_minmax(0,1fr)_40px] items-center border-b border-line px-4 py-4"
+          class="grid min-w-0 grid-cols-[40px_minmax(0,1fr)_40px] items-center border-b border-line px-3 py-4 sm:px-4"
         >
           <button
             type="button"
@@ -266,9 +268,9 @@ watch(
             <AppIcon name="chevron-left" :size="18" />
           </button>
 
-          <div class="px-3 text-center">
-            <h3>{{ weeklyRecords.weekLabel }}</h3>
-            <p class="mt-1 text-xs text-muted">
+          <div class="min-w-0 px-2 text-center sm:px-3">
+            <h3 class="break-words">{{ weeklyRecords.weekLabel }}</h3>
+            <p class="mt-1 break-words text-xs text-muted">
               {{ weeklyRecords.employee.fullName }} ·
               {{ weeklyRecords.employee.jobTitle }}
             </p>
@@ -284,7 +286,63 @@ watch(
           </button>
         </header>
 
-        <div class="overflow-x-auto">
+        <div class="divide-y divide-line md:hidden">
+          <article
+            v-for="day in weeklyRecords.days"
+            :key="day.date"
+            :class="[
+              'min-w-0 px-4 py-4',
+              day.status === 'missing' ? 'bg-surface-soft/45' : '',
+            ]"
+          >
+            <div class="flex min-w-0 items-start justify-between gap-3">
+              <strong class="min-w-0 break-words text-sm">
+                {{ day.dateLabel }}
+              </strong>
+              <StatusBadge :tone="day.statusTone" class="shrink-0">
+                {{ day.statusLabel }}
+              </StatusBadge>
+            </div>
+
+            <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 text-xs">
+              <div class="min-w-0">
+                <dt class="text-muted">Start</dt>
+                <dd class="mt-1 font-semibold text-ink">
+                  {{ day.startTime }}
+                </dd>
+              </div>
+              <div class="min-w-0">
+                <dt class="text-muted">End</dt>
+                <dd class="mt-1 font-semibold text-ink">
+                  {{ day.endTime }}
+                </dd>
+              </div>
+              <div class="min-w-0">
+                <dt class="text-muted">Break</dt>
+                <dd class="mt-1 font-semibold text-ink">
+                  {{ day.breakLabel }}
+                </dd>
+              </div>
+              <div class="min-w-0">
+                <dt class="text-muted">Total</dt>
+                <dd class="mt-1 font-semibold text-ink">
+                  {{ day.totalLabel }}
+                </dd>
+              </div>
+            </dl>
+
+            <AppButton
+              variant="secondary"
+              size="small"
+              class="mt-4 w-full"
+              @click="openEntryModal(day)"
+            >
+              {{ day.status === 'complete' ? 'Edit entry' : 'Add entry' }}
+            </AppButton>
+          </article>
+        </div>
+
+        <div class="hidden overflow-x-auto md:block">
           <table class="w-full min-w-[860px] border-collapse text-left">
             <caption class="sr-only">
               Weekly working time records
@@ -374,7 +432,9 @@ watch(
         </div>
       </section>
 
-      <aside class="border border-line bg-surface">
+      <aside
+        class="min-w-0 max-w-full overflow-hidden border border-line bg-surface"
+      >
         <header class="border-b border-line bg-surface-soft px-5 py-4">
           <p
             class="text-[11px] font-bold uppercase tracking-[0.1em] text-brand"
@@ -384,7 +444,10 @@ watch(
           <h3 class="mt-1">Record working time</h3>
         </header>
 
-        <form class="grid gap-4 px-5 py-5" @submit.prevent="handleQuickSubmit">
+        <form
+          class="grid min-w-0 gap-4 px-4 py-5 sm:px-5"
+          @submit.prevent="handleQuickSubmit"
+        >
           <p
             v-if="quickErrors.form"
             class="border-l-2 border-danger bg-danger-soft px-3 py-2 text-xs text-danger"
@@ -407,7 +470,7 @@ watch(
             :error="quickErrors.date"
             required
           />
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid min-w-0 gap-3 sm:grid-cols-2">
             <AppInput
               v-model="quickForm.startTime"
               label="Start"

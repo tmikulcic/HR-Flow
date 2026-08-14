@@ -25,8 +25,8 @@ const dialog = ref(null);
 let previouslyFocusedElement = null;
 let previousBodyOverflow = '';
 const modalClasses = computed(() => [
-  'flex h-full max-h-none w-full flex-col border border-line-strong bg-surface sm:h-auto sm:max-h-[calc(100vh-2.5rem)]',
-  props.size === 'large' ? 'max-w-3xl' : 'max-w-lg',
+  'flex h-dvh max-h-dvh min-w-0 w-full max-w-full flex-col overflow-hidden border-y border-line-strong bg-surface sm:h-auto sm:max-h-[calc(100dvh-2.5rem)] sm:border',
+  props.size === 'large' ? 'sm:max-w-3xl' : 'sm:max-w-lg',
 ]);
 
 function getFocusableElements() {
@@ -130,7 +130,7 @@ onBeforeUnmount(() => {
   <Teleport to="body">
     <div
       v-if="props.open"
-      class="fixed inset-0 z-50 grid place-items-center bg-ink/55 p-0 sm:p-5"
+      class="fixed inset-0 z-50 grid place-items-center overflow-hidden bg-ink/55 p-0 sm:p-5"
       @mousedown.self="handleBackdrop"
       @keydown="handleKeydown"
     >
@@ -143,9 +143,11 @@ onBeforeUnmount(() => {
         tabindex="-1"
       >
         <header
-          class="flex items-center justify-between border-b border-line bg-surface-soft px-5 py-4"
+          class="flex min-w-0 items-center justify-between border-b border-line bg-surface-soft px-4 py-4 sm:px-5"
         >
-          <h2 :id="titleId" class="text-lg">{{ props.title }}</h2>
+          <h2 :id="titleId" class="min-w-0 break-words pr-3 text-lg">
+            {{ props.title }}
+          </h2>
           <button
             type="button"
             class="grid size-9 place-items-center rounded-control text-muted hover:bg-line"
@@ -155,12 +157,15 @@ onBeforeUnmount(() => {
             <AppIcon name="close" :size="18" />
           </button>
         </header>
-        <div class="overflow-y-auto px-5 py-5" data-modal-content>
+        <div
+          class="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-5 sm:px-5"
+          data-modal-content
+        >
           <slot />
         </div>
         <footer
           v-if="$slots.footer"
-          class="flex flex-col-reverse gap-2 border-t border-line px-5 py-4 sm:flex-row sm:justify-end"
+          class="flex min-w-0 flex-col-reverse gap-2 border-t border-line px-4 py-4 sm:flex-row sm:justify-end sm:px-5"
         >
           <slot name="footer" />
         </footer>

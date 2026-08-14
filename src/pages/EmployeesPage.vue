@@ -80,7 +80,7 @@ function handleEmployeeSaved() {
 </script>
 
 <template>
-  <main class="mx-auto w-full max-w-[1480px]">
+  <main class="mx-auto min-w-0 w-full max-w-[1480px]">
     <section
       class="flex flex-col gap-4 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between"
     >
@@ -120,7 +120,9 @@ function handleEmployeeSaved() {
     </section>
 
     <section class="mt-6">
-      <div class="border border-line bg-surface">
+      <div
+        class="min-w-0 max-w-full overflow-hidden border border-line bg-surface"
+      >
         <div
           class="grid gap-4 border-b border-line p-4 lg:grid-cols-[minmax(260px,1fr)_180px_180px]"
         >
@@ -173,7 +175,82 @@ function handleEmployeeSaved() {
 
       <div
         v-if="filteredEmployees.length"
-        class="overflow-x-auto border-x border-b border-line bg-surface"
+        class="border-x border-b border-line bg-surface md:hidden"
+      >
+        <article
+          v-for="employee in filteredEmployees"
+          :key="employee.id"
+          class="min-w-0 border-t border-line px-4 py-4 first:border-t-0"
+        >
+          <div class="flex min-w-0 items-start justify-between gap-3">
+            <RouterLink
+              :to="{
+                name: 'employee-detail',
+                params: { employeeId: employee.id },
+              }"
+              class="flex min-w-0 items-center gap-3"
+            >
+              <Avatar
+                :name="employee.fullName"
+                size="small"
+                class="shrink-0"
+              />
+              <span class="min-w-0">
+                <strong class="block truncate text-sm">
+                  {{ employee.fullName }}
+                </strong>
+                <span class="mt-0.5 block break-all text-xs text-muted">
+                  {{ employee.email }}
+                </span>
+              </span>
+            </RouterLink>
+            <StatusBadge :tone="employee.statusTone" class="shrink-0">
+              {{ employee.statusLabel }}
+            </StatusBadge>
+          </div>
+
+          <dl class="mt-4 grid min-w-0 gap-2 text-xs">
+            <div
+              class="grid min-w-0 grid-cols-[80px_minmax(0,1fr)] gap-3"
+            >
+              <dt class="text-muted">Job title</dt>
+              <dd class="min-w-0 break-words font-semibold text-ink">
+                {{ employee.jobTitle }}
+              </dd>
+            </div>
+            <div
+              class="grid min-w-0 grid-cols-[80px_minmax(0,1fr)] gap-3"
+            >
+              <dt class="text-muted">Team</dt>
+              <dd class="min-w-0 break-words text-ink">
+                {{ employee.teamName }}
+              </dd>
+            </div>
+            <div
+              class="grid min-w-0 grid-cols-[80px_minmax(0,1fr)] gap-3"
+            >
+              <dt class="text-muted">Manager</dt>
+              <dd class="min-w-0 break-words text-ink">
+                {{ employee.managerName }}
+              </dd>
+            </div>
+          </dl>
+
+          <RouterLink
+            :to="{
+              name: 'employee-detail',
+              params: { employeeId: employee.id },
+            }"
+            class="mt-4 inline-flex text-xs font-semibold text-brand hover:text-brand-dark"
+          >
+            View profile →
+          </RouterLink>
+        </article>
+      </div>
+
+      <div
+        v-if="filteredEmployees.length"
+        class="hidden overflow-x-auto border-x border-b border-line bg-surface md:block"
       >
         <table class="w-full min-w-[920px] border-collapse text-left">
           <caption class="sr-only">
