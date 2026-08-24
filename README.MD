@@ -1,26 +1,31 @@
 # HR-Flow
 
-HR-Flow je web aplikacija za centralizirano upravljanje osnovnim HR procesima unutar kompanije. Aplikacija povezuje administratore, HR djelatnike, managere i zaposlenike u zajedničkom workspaceu za evidenciju zaposlenika, radnog vremena, dopusta i obavijesti.
+HR-Flow je web aplikacija za centralizirano upravljanje osnovnim HR procesima unutar kompanije. Povezuje administratore, HR djelatnike, managere i zaposlenike u zajedničkom workspaceu za upravljanje zaposlenicima, radnim vremenom, dopustima, timovima i obavijestima.
+
+Objavljena aplikacija dostupna je na [hr-flow-pi.netlify.app](https://hr-flow-pi.netlify.app).
 
 ## Pregled aplikacije
 
 - dashboard prilagođen korisničkoj ulozi;
-- pregled i upravljanje zaposlenicima;
-- tjedna evidencija radnog vremena;
+- imenik i detaljni profili zaposlenika;
+- dodavanje i uređivanje zaposlenika;
+- tjedna evidencija i uređivanje radnog vremena;
 - slanje i povlačenje zahtjeva za dopust;
 - managersko odobravanje i odbijanje dopusta;
-- pregled managerskog tima i dostupnosti;
-- centar obavijesti s unread statusom;
-- administratorsko upravljanje korisnicima, ulogama, timovima i kompanijom.
+- pregled managerskog tima, dostupnosti i evidentiranih sati;
+- centar obavijesti s pročitanim i nepročitanim statusom;
+- administratorsko upravljanje korisnicima, ulogama i pristupom;
+- upravljanje timovima i postavkama kompanije;
+- responsive sučelje za desktop i mobilne uređaje.
 
 ## Korisničke uloge
 
 | Uloga | Glavne mogućnosti |
 | --- | --- |
-| Administrator | Upravljanje korisnicima, ulogama, timovima, kompanijom i zaposlenicima. |
-| HR | Upravljanje zaposlenicima i pregled podataka kompanije. |
-| Manager | Pregled vlastitog tima i odlučivanje o zahtjevima za dopust. |
-| Employee | Upravljanje vlastitim radnim vremenom, dopustima i obavijestima. |
+| Administrator | Upravlja korisnicima, pristupom, timovima, kompanijom i zaposlenicima. |
+| HR | Upravlja zaposlenicima i njihovom evidencijom unutar kompanije. |
+| Manager | Pregledava vlastiti tim i odlučuje o zahtjevima za dopust. |
+| Employee | Upravlja vlastitim radnim vremenom, dopustima i obavijestima. |
 
 ## Lokalno pokretanje
 
@@ -39,3 +44,9 @@ HR-Flow je web aplikacija za centralizirano upravljanje osnovnim HR procesima un
    ```
 
 4. Otvoriti lokalnu adresu koju prikaže Vite.
+
+## Dokumentacija
+
+Detaljna projektna i korisnička dokumentacija dostupna je u datoteci [docs/Dokumentacija.md](docs/Dokumentacija.md).
+
+Dijagrami i prototip sučelja nalaze se u direktoriju [`docs`](docs/).
