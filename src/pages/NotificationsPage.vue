@@ -103,11 +103,6 @@ watch(
       class="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between"
     >
       <div>
-        <p
-          class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand"
-        >
-          Activity center
-        </p>
         <h2>Notifications</h2>
       </div>
 
@@ -120,7 +115,9 @@ watch(
       </AppButton>
     </section>
 
-    <section class="mt-6 grid items-start gap-4">
+    <section
+      class="mt-6 grid items-start gap-4 min-[1200px]:grid-cols-[minmax(0,1fr)_320px] min-[1440px]:grid-cols-[minmax(0,1fr)_360px]"
+    >
       <article class="border border-line bg-surface">
         <header
           class="flex flex-col gap-4 border-b border-line px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
@@ -133,7 +130,7 @@ watch(
           </div>
 
           <div
-            class="inline-flex self-start bg-surface-soft p-1 sm:self-auto"
+            class="inline-flex self-start rounded-control bg-surface-soft p-1 sm:self-auto"
             role="group"
             aria-label="Filter notifications"
           >

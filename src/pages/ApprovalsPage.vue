@@ -94,11 +94,6 @@ function handleDecision({ requestId, decision, comment }) {
 <template>
   <main v-if="approvalData" class="mx-auto w-full max-w-[1480px]">
     <section class="border-b border-line pb-6">
-      <p
-        class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand"
-      >
-        Manager workspace
-      </p>
       <h2>Leave approvals</h2>
     </section>
 
@@ -110,7 +105,9 @@ function handleDecision({ requestId, decision, comment }) {
       {{ feedbackMessage }} The employee has been notified.
     </p>
 
-    <section class="mt-6 grid items-start gap-4">
+    <section
+      class="mt-6 grid items-start gap-4 min-[1200px]:grid-cols-[minmax(0,1fr)_320px] min-[1440px]:grid-cols-[minmax(0,1fr)_360px]"
+    >
       <article class="border border-line bg-surface">
         <header
           class="flex flex-col gap-4 border-b border-line px-5 py-4 sm:flex-row sm:items-end sm:justify-between"

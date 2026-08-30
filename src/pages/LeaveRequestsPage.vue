@@ -126,11 +126,6 @@ function handleWithdraw(requestId) {
       class="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between"
     >
       <div>
-        <p
-          class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand"
-        >
-          Time off
-        </p>
         <h2>My leave</h2>
       </div>
 
@@ -188,7 +183,9 @@ function handleWithdraw(requestId) {
       </article>
     </section>
 
-    <section class="mt-6 grid items-start gap-4">
+    <section
+      class="mt-6 grid items-start gap-4 min-[1200px]:grid-cols-[minmax(0,1fr)_320px] min-[1440px]:grid-cols-[minmax(0,1fr)_360px]"
+    >
       <article class="border border-line bg-surface">
         <header
           class="flex flex-col gap-4 border-b border-line px-5 py-4 sm:flex-row sm:items-end sm:justify-between"
@@ -208,7 +205,7 @@ function handleWithdraw(requestId) {
         </header>
 
         <div v-if="filteredRequests.length" class="overflow-x-auto">
-          <table class="w-full min-w-[680px] border-collapse text-left">
+          <table class="w-full min-w-[540px] border-collapse text-left">
             <caption class="sr-only">
               Leave request history
             </caption>

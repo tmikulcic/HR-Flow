@@ -85,11 +85,6 @@ function handleEmployeeSaved() {
       class="flex flex-col gap-4 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between"
     >
       <div>
-        <p
-          class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand"
-        >
-          People directory
-        </p>
         <h2>Employees</h2>
       </div>
 

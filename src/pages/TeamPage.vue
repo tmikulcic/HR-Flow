@@ -59,11 +59,6 @@ watch(
       class="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between"
     >
       <div>
-        <p
-          class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand"
-        >
-          Manager workspace
-        </p>
         <h2>{{ teamOverview.team.name }} team</h2>
       </div>
 

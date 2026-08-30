@@ -154,7 +154,7 @@ watch(
       <section
         v-if="activeTab === 'overview'"
         id="profile-panel-overview"
-        class="mt-6 grid gap-4"
+        class="mt-6 grid gap-4 min-[1200px]:grid-cols-[minmax(0,1fr)_320px] min-[1440px]:grid-cols-[minmax(0,1fr)_360px]"
         role="tabpanel"
         aria-labelledby="profile-tab-overview"
         tabindex="0"

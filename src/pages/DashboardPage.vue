@@ -38,11 +38,6 @@ const activityTones = {
       class="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between"
     >
       <div>
-        <p
-          class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand"
-        >
-          {{ dashboard.eyebrow }}
-        </p>
         <h2>{{ dashboard.title }}</h2>
       </div>
 
@@ -71,7 +66,9 @@ const activityTones = {
       </article>
     </section>
 
-    <section class="mt-6 grid gap-4">
+    <section
+      class="mt-6 grid gap-4 min-[1200px]:grid-cols-[minmax(0,1fr)_320px] min-[1440px]:grid-cols-[minmax(0,1fr)_360px]"
+    >
       <article class="border border-line bg-surface">
         <header
           class="flex items-center justify-between gap-4 border-b border-line px-5 py-4"

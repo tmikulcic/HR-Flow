@@ -166,11 +166,6 @@ watch(
 <template>
   <main v-if="overview" class="mx-auto w-full max-w-[1480px]">
     <section class="border-b border-line pb-6">
-      <p
-        class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand"
-      >
-        Workspace settings
-      </p>
       <h2>Administration</h2>
     </section>
 

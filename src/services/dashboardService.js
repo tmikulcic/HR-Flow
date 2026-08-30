@@ -345,27 +345,18 @@ function getKpis({
 function getDashboardCopy(user, companyName) {
   if (user.role === USER_ROLES.MANAGER) {
     return {
-      eyebrow: 'Team workspace',
-      title: 'Your team at a glance',
-      description:
-        'Review team availability, working time and requests that need your attention.',
+      title: 'Your team',
     };
   }
 
   if (user.role === USER_ROLES.EMPLOYEE) {
     return {
-      eyebrow: 'Personal workspace',
-      title: 'Your work overview',
-      description:
-        'Keep track of your working time, leave balance and recent updates.',
+      title: 'Your work',
     };
   }
 
   return {
-    eyebrow: 'Company workspace',
-    title: `${companyName} at a glance`,
-    description:
-      'Review people data, working time and current leave activity across the company.',
+    title: companyName,
   };
 }
 

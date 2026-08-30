@@ -160,20 +160,23 @@ watch(
       class="flex flex-col gap-5 border-b border-line pb-6 lg:flex-row lg:items-end lg:justify-between"
     >
       <div>
-        <p
-          class="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand"
-        >
-          Working time
-        </p>
         <h2>Weekly time records</h2>
       </div>
 
-      <div v-if="canSelectEmployee" class="w-full max-w-xs">
-        <AppSelect
-          v-model="selectedEmployeeId"
-          label="Employee"
-          :options="selectOptions"
-        />
+      <div v-if="canSelectEmployee" class="flex items-center gap-3">
+        <label
+          for="time-tracking-employee"
+          class="text-xs font-semibold text-muted"
+        >
+          Employee
+        </label>
+        <div class="w-56">
+          <AppSelect
+            id="time-tracking-employee"
+            v-model="selectedEmployeeId"
+            :options="selectOptions"
+          />
+        </div>
       </div>
       <div v-else-if="selectedEmployee" class="text-left lg:text-right">
         <strong class="block text-sm">{{ selectedEmployee.label }}</strong>
@@ -236,7 +239,7 @@ watch(
 
     <div
       v-if="weeklyRecords"
-      class="mt-6 grid min-w-0 max-w-full items-start gap-4"
+      class="mt-6 grid min-w-0 max-w-full items-start gap-4 min-[1200px]:grid-cols-[minmax(0,1fr)_320px] min-[1440px]:grid-cols-[minmax(0,1fr)_360px]"
     >
       <section
         class="min-w-0 max-w-full overflow-hidden border border-line bg-surface"
@@ -322,7 +325,7 @@ watch(
         </div>
 
         <div class="hidden overflow-x-auto lg:block">
-          <table class="w-full min-w-[680px] border-collapse text-left">
+          <table class="w-full min-w-[540px] border-collapse text-left">
             <caption class="sr-only">
               Weekly working time records
             </caption>
