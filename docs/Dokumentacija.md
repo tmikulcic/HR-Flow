@@ -81,16 +81,18 @@ Primarni korisnici su manje i srednje kompanije kojima treba jednostavna interna
 - **Manager**, zadužen za tim i odluke o dopustima;
 - **Employee**, koji upravlja vlastitim podacima vezanima uz vrijeme i dopust.
 
-### 2.4. Kontekst postojećih načina rada
+### 2.4. Postojeća i konkurentska rješenja
 
 HR-Flow ne pokušava zamijeniti sve funkcionalnosti velikog HRIS sustava. Fokus je na procesima koji se u manjim organizacijama najčešće vode kroz nekoliko nepovezanih alata.
+
+Na tržištu postoje komercijalne HR platforme kao što su BambooHR, Personio i Factorial. One pokrivaju širi skup procesa, dok je HR-Flow usmjeren na manji broj osnovnih funkcionalnosti: zaposlenike, radno vrijeme, dopuste, timove i obavijesti. Takav opseg čini aplikaciju jednostavnijom za manje kompanije kojima nisu potrebni moduli poput obračuna plaće ili upravljanja velikim brojem dokumenata.
 
 | Način rada                | Prednosti                                                | Ograničenja koja HR-Flow adresira                                                  |
 | ------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | Proračunske tablice       | Poznate su korisnicima i brzo se izrađuju                | Nema uloga, centralne validacije, automatskih obavijesti ni jasne povijesti odluka |
 | Elektronička pošta i chat | Jednostavno slanje zahtjeva                              | Zahtjevi se gube među porukama i saldo se mora računati odvojeno                   |
 | Kalendar                  | Dobar pregled odsutnosti                                 | Ne vodi proces zahtjeva, odobrenja i prava na dopust                               |
-| Velike HR platforme       | Širok skup mogućnosti                                    | Za mali tim mogu biti složenije i opsežnije od stvarne potrebe                     |
+| Komercijalne HR platforme | Širok skup mogućnosti                                    | Za mali tim mogu biti složenije i opsežnije od stvarne potrebe                     |
 | HR-Flow                   | Jedinstven tok za zaposlenike, vrijeme, dopuste i timove | Trenutačni MVP nema obračun plaće, dokumente zaposlenika ni napredno izvještavanje |
 
 ### 2.5. SWOT analiza
@@ -125,6 +127,8 @@ Za lokalni razvoj i produkcijski rad potrebni su:
 ### 2.7. Koristi sustava
 
 **Kompanija** dobiva jedinstven izvor podataka za osnovne HR procese i jasnije razdvajanje odgovornosti.
+
+**Vodstvo kompanije** dobiva pouzdaniji pregled zaposlenika, prisutnosti i planiranih odsutnosti, što olakšava organizaciju rada i raspodjelu resursa.
 
 **HR djelatnik** lakše održava imenik i poslovne podatke zaposlenika te vidi evidenciju kompanije bez ručnog spajanja više tablica.
 
@@ -265,6 +269,8 @@ HR-Flow nema vlastiti aplikacijski backend. Preglednik komunicira sa sljedećim 
 
 **Netlify** poslužuje statički Vite build preko HTTPS-a. SPA redirect vraća `index.html` za izravno otvorene Vue rute, nakon čega Vue Router preuzima navigaciju u pregledniku.
 
+Firebase Authentication sudjeluje u obrascima prijave, odjave i promjene lozinke. Cloud Firestore sudjeluje u svim obrascima koji čitaju ili mijenjaju zaposlenike, vrijeme, dopuste, timove i obavijesti. Netlify nema pristup poslovnim podacima, nego pruža infrastrukturu preko koje se aplikacija isporučuje korisniku.
+
 ### 3.6. Glavni korisnički scenariji
 
 #### Scenarij 1: prijava u sustav
@@ -348,16 +354,9 @@ _Preduvjet:_ aktivna administratorska sesija.
 
 ![HR-Flow klasni dijagram](./class-diagram.png)
 
-Klasni dijagram prikazuje poslovne informacije, a ne Vue komponente. Središnji odnosi su:
+Klasni dijagram prikazuje poslovne informacije, a ne Vue komponente. Kompanija sadrži korisnike i timove, tim okuplja više korisnika, a korisnik može imati više radnih zapisa, zahtjeva za odsustvo i obavijesti. Zahtjev za odsustvo koristi enumeracije vrste i statusa, dok korisnik koristi enumeraciju uloge.
 
-- Company sadrži korisnike, zaposlenike i timove;
-- User pripada kompaniji i opcionalno je povezan s Employee zapisom;
-- Employee pripada timu i može imati nadređenog Employeea;
-- Team ima managera, dok se članovi izvode iz `Employee.teamId`;
-- TimeEntry pripada jednom zaposleniku;
-- LeaveRequest pripada zaposleniku i sadrži managera koji donosi odluku;
-- Notification pripada korisniku i može pokazivati na povezani poslovni zapis;
-- Membership povezuje email iz Firebase Authenticationa s Userom i kompanijom.
+Prikazane veze su obične asocijacije s kardinalnostima. Kompozicija se ne koristi jer se povezani zapisi u Firestoreu spremaju u zasebne kolekcije i imaju vlastite identifikatore. Dijagram je radi čitljivosti pojednostavljen: implementacija dodatno razdvaja aplikacijski `User` od poslovnog `Employee` zapisa, dok tehnički `Membership` povezuje Firebase email s korisnikom i kompanijom.
 
 Izvorna verzija dostupna je u [Draw.io formatu](./class-diagram.drawio).
 
@@ -420,18 +419,9 @@ HR-Flow/
 
 ### 4.3. Arhitektura
 
-```mermaid
-flowchart LR
-    U[Vue stranice i komponente] --> S[Poslovni servisi]
-    S --> R[Repository sloj]
-    R --> C[Memorijski cache]
-    R --> Q[Red asinkronih zapisa]
-    Q --> F[(Cloud Firestore)]
-    A[Firebase Authentication] --> SS[Session store]
-    SS --> L[Role-scoped učitavanje]
-    L --> C
-    SS --> G[Router guard i UI ovlasti]
-```
+Korisnička radnja započinje u Vue stranici ili komponenti. Ona poziva odgovarajući poslovni service, koji validira podatke i zatim koristi repository sloj. Repository odmah ažurira memorijski cache, a promjenu dodaje u red asinkronih zapisa prema Cloud Firestoreu.
+
+Firebase Authentication zasebno potvrđuje identitet korisnika. Session store na temelju prijavljenog identiteta pokreće učitavanje podataka prema ulozi te izlaže aktivnog korisnika, zaposlenika, kompaniju i ulogu. Router guard koristi taj kontekst za zaštitu stranica, dok se stvarni pristup dokumentima dodatno provjerava Firestore Security Rules pravilima.
 
 Slojevi imaju odvojene odgovornosti:
 
@@ -549,13 +539,35 @@ Servisi vraćaju strukture prilagođene prikazu kako Vue templatei ne bi sadrža
 - HR može održavati zaposlenike, ali ne može postaviti drugog Administratora;
 - dodavanje Employee zapisa ne znači automatsko stvaranje Firebase Auth računa.
 
-### 4.9. Višekratne UI komponente
+### 4.9. Implementacija ključnih funkcionalnosti
+
+Ključne funkcionalnosti povezane su kroz Vue viewove, višekratne komponente, poslovne servise i repository sloj. View upravlja stanjem trenutačnog zaslona i korisničkim događajima, komponenta prikazuje pojedini dio sučelja, service provodi poslovna pravila, a repository čita ili sprema podatke.
+
+#### Prijava i uspostava sesije
+
+`LoginPage` je Vue view koji upravlja vrijednostima `email`, `password` i `rememberMe`, validacijskim objektom `errors`, porukom `formMessage` i stanjem `isSubmitting`. Metode `validateForm()`, `handleSubmit()` i `handleForgotPassword()` obrađuju unos i korisničke radnje. Polja emaila i lozinke prikazuju se pomoću komponente `AppInput`, a slanje obrasca pomoću komponente `AppButton`.
+
+Nakon slanja obrasca `LoginPage` poziva `signInWithCredentials()` iz `authService.js`. Service postavlja odgovarajuće trajanje sesije i šalje podatke Firebase Authenticationu. Nakon uspješne provjere identiteta `initializeFirestoreDatabase()` učitava Membership, User, Employee i Company zapise te ostale podatke dopuštene korisničkoj ulozi.
+
+`SessionStore` zatim sprema reference `currentUser`, `currentEmployee`, `currentCompany` i `currentRole`. Router koristi te vrijednosti za provjeru pristupa i nakon prijave otvara dashboard ili prvotno zatraženu rutu. Reset lozinke koristi isti view, ali poziva `requestPasswordReset()` iz auth servicea.
+
+#### Slanje i obrada zahtjeva za dopust
+
+`NewLeaveRequestPage` je Vue view koji čuva podatke obrasca, validacijske greške, izračunani pregled zahtjeva i stanje slanja. Polja obrasca prikazuju se kroz `AppInput` i `AppSelect`, dok `getLeaveRequestPreview()` iz `leaveRequestService.js` računa broj radnih dana, reviewera i očekivani saldo.
+
+Metoda za slanje poziva `saveLeaveRequest()`. Service provjerava datume, preklapanja, razlog i raspoloživi godišnji odmor. Valjani zahtjev sprema se pomoću `leaveRequestRepository` sa statusom `pending`, a `notificationService` stvara obavijest za reviewera.
+
+Manager zahtjeve obrađuje na viewu `ApprovalsPage`. Njegovo lokalno stanje uključuje `selectedRequestId`, `sortOrder`, `decisionType` i `dataVersion`. Metoda `openDecision()` otvara `LeaveDecisionModal`, koji čuva komentar i razlikuje odobravanje od odbijanja.
+
+Nakon potvrde `handleDecision()` poziva `decideLeaveRequest()` iz `leaveApprovalService.js`. Service provjerava managerski opseg i dopušteni statusni prijelaz, a repository mijenja zahtjev u `approved` ili `declined`. Na kraju `notificationService` stvara obavijest zaposleniku, a povećanje vrijednosti `dataVersion` osvježava prikaz na stranici.
+
+### 4.10. Višekratne UI komponente
 
 | Komponenta    | Odgovornost                                                   |
 | ------------- | ------------------------------------------------------------- |
 | `AppLayout`   | Desktop i mobilni layout, sidebar overlay i glavni RouterView |
 | `AppSidebar`  | Navigacija filtrirana prema ovlastima, badgevi i odjava       |
-| `AppTopbar`   | Naslov rute, mobilni menu, obavijesti i avatar                |
+| `AppTopbar`   | Naslov rute, mobilni menu i avatar                             |
 | `BrandLogo`   | Konzistentan HR-Flow znak i naziv                             |
 | `AppButton`   | Varijante, veličine i disabled stanje gumba                   |
 | `AppIcon`     | Interna SVG biblioteka ikona                                  |
@@ -578,7 +590,7 @@ Domenski modali koriste zajedničke osnovne komponente:
 
 `AppModal` zadržava fokus unutar aktivnog dijaloga, zatvara se tipkom Escape i vraća fokus elementu koji ga je otvorio.
 
-### 4.10. Stranice i rute
+### 4.11. Stranice i rute
 
 | Ruta                     | Stranica              | Namjena                               |
 | ------------------------ | --------------------- | ------------------------------------- |
@@ -596,7 +608,7 @@ Domenski modali koriste zajedničke osnovne komponente:
 | `/ui-preview`            | `UiPreviewPage`       | Razvojni pregled UI komponenti        |
 | `*`                      | `NotFoundPage`        | Nepostojeća ruta                      |
 
-### 4.11. Responsive dizajn i pristupačnost
+### 4.12. Responsive dizajn i pristupačnost
 
 Responsive ponašanje implementirano je Tailwind mobile-first klasama. Na manjim ekranima sidebar postaje off-canvas navigacija, tablice zaposlenika i vremena prelaze u vertikalne zapise, forme postaju jednostupačne, a veliki modal zauzima raspoloživi viewport. Široke tablice koje nemaju alternativni prikaz imaju lokalni horizontalni scroll bez širenja cijele stranice.
 
@@ -612,7 +624,7 @@ Pristupačnost uključuje:
 - `aria-label` opise icon-only gumba;
 - `prefers-reduced-motion` podršku.
 
-### 4.12. Firestore sigurnost
+### 4.13. Firestore sigurnost
 
 `firestore.rules` primjenjuje default-deny pristup. Dozvoljena čitanja i zapisi ovise o aktivnom Membershipu, kompaniji, ulozi i odnosu zaposlenika.
 
@@ -628,7 +640,7 @@ Primjeri ograničenja:
 
 Složeni upiti podržani su indeksima iz `firestore.indexes.json`.
 
-### 4.13. Produkcijski build i objava
+### 4.14. Produkcijski build i objava
 
 Vite generira statički produkcijski sadržaj naredbom:
 
@@ -651,7 +663,7 @@ SPA redirect usmjerava sve rute na `index.html`, pa izravno otvaranje adrese pop
 
 Produkcijska adresa aplikacije je [hr-flow-pi.netlify.app](https://hr-flow-pi.netlify.app).
 
-### 4.14. Trenutačna ograničenja
+### 4.15. Trenutačna ograničenja
 
 - nema vlastitog backend servera ni Cloud Functions sloja;
 - podaci se ne osvježavaju automatski između više istodobnih browser sesija;
