@@ -127,12 +127,7 @@ async function handleForgotPassword() {
         <BrandLogo to="/login" variant="dark" />
 
         <div class="mt-14 border-b border-line pb-8">
-          <p
-            class="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-brand"
-          >
-            People operations
-          </p>
-          <h1>Welcome back</h1>
+          <h1>Welcome</h1>
           <p class="mt-3 max-w-sm text-sm text-muted">
             Sign in to manage your people, time and leave in one place.
           </p>
@@ -226,7 +221,7 @@ async function handleForgotPassword() {
     </section>
 
     <section
-      class="relative hidden min-h-screen overflow-hidden bg-sidebar px-16 py-14 text-white lg:flex lg:flex-col lg:justify-between"
+      class="relative hidden min-h-screen overflow-hidden bg-sidebar px-16 py-14 text-white lg:flex lg:flex-col lg:justify-center"
       aria-label="HR-Flow introduction"
     >
       <div
@@ -244,19 +239,7 @@ async function handleForgotPassword() {
         "
       />
 
-      <div class="relative ml-auto h-12 w-36 border-t border-[#8ee0ca]/70">
-        <span
-          class="absolute right-0 top-[-4px] size-2 bg-[#8ee0ca]"
-          aria-hidden="true"
-        />
-      </div>
-
       <div class="relative max-w-xl">
-        <p
-          class="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#8ee0ca]"
-        >
-          HR-Flow workspace
-        </p>
         <h2
           class="max-w-lg text-[2.65rem] leading-[1.08] tracking-[-0.04em] text-white"
         >
@@ -268,10 +251,6 @@ async function handleForgotPassword() {
         </p>
       </div>
 
-      <div class="relative flex items-center gap-4 text-xs text-[#8fb1a9]">
-        <span class="h-px w-16 bg-[#8ee0ca]/50" aria-hidden="true" />
-        Secure internal workspace
-      </div>
     </section>
   </main>
 </template>
