@@ -17,12 +17,6 @@ const dashboard = computed(() =>
   ),
 );
 
-const currentDate = new Intl.DateTimeFormat('en', {
-  weekday: 'long',
-  month: 'long',
-  day: 'numeric',
-}).format(new Date());
-
 const activityIcons = {
   leave: 'calendar',
   time: 'clock',
@@ -36,12 +30,6 @@ const activityTones = {
   Withdrawn: 'neutral',
 };
 
-const kpiBorderClasses = [
-  '',
-  'border-t border-line sm:border-l sm:border-t-0',
-  'border-t border-line xl:border-l xl:border-t-0',
-  'border-t border-line sm:border-l xl:border-t-0',
-];
 </script>
 
 <template>
@@ -56,7 +44,6 @@ const kpiBorderClasses = [
           {{ dashboard.eyebrow }}
         </p>
         <h2>{{ dashboard.title }}</h2>
-        <p class="mt-1 text-xs text-subtle">{{ currentDate }}</p>
       </div>
 
       <RouterLink
@@ -69,18 +56,18 @@ const kpiBorderClasses = [
     </section>
 
     <section
-      class="mt-6 grid border border-line bg-surface sm:grid-cols-2 xl:grid-cols-4"
+      class="mt-6 grid gap-px border border-line bg-line sm:grid-cols-2 xl:grid-cols-4"
       aria-label="Dashboard statistics"
     >
       <article
-        v-for="(kpi, index) in dashboard.kpis"
+        v-for="kpi in dashboard.kpis"
         :key="kpi.label"
-        :class="['min-h-28 p-5', kpiBorderClasses[index]]"
+        class="flex items-center gap-2 bg-surface px-4 py-3"
       >
-        <p class="text-xs font-semibold text-muted">{{ kpi.label }}</p>
-        <p class="mt-3 text-2xl font-bold tracking-[-0.025em] text-ink">
-          {{ kpi.value }}
-        </p>
+        <span class="text-base font-semibold text-ink">
+          {{ kpi.label }}:
+        </span>
+        <span class="text-base font-semibold text-brand">{{ kpi.value }}</span>
       </article>
     </section>
 

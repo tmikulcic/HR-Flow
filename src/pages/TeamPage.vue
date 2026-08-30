@@ -76,32 +76,32 @@ watch(
     </section>
 
     <section
-      class="mt-6 grid grid-cols-2 border border-line bg-surface lg:grid-cols-4"
+      class="mt-6 grid grid-cols-2 gap-px border border-line bg-line lg:grid-cols-4"
       aria-label="Team summary"
     >
-      <article class="border-b border-r border-line px-5 py-4 lg:border-b-0">
-        <p class="text-xs font-semibold text-muted">Team members</p>
-        <strong class="mt-2 block text-xl tabular-nums">
+      <article class="flex items-center gap-2 bg-surface px-4 py-3">
+        <span class="text-base font-semibold text-ink">Team members:</span>
+        <span class="text-base font-semibold text-brand">
           {{ teamOverview.summary.totalMembers }}
-        </strong>
+        </span>
       </article>
-      <article class="border-b border-line px-5 py-4 lg:border-b-0 lg:border-r">
-        <p class="text-xs font-semibold text-muted">Available today</p>
-        <strong class="mt-2 block text-xl tabular-nums">
+      <article class="flex items-center gap-2 bg-surface px-4 py-3">
+        <span class="text-base font-semibold text-ink">Available today:</span>
+        <span class="text-base font-semibold text-brand">
           {{ teamOverview.summary.availableToday }}
-        </strong>
+        </span>
       </article>
-      <article class="border-r border-line px-5 py-4">
-        <p class="text-xs font-semibold text-muted">On leave</p>
-        <strong class="mt-2 block text-xl tabular-nums">
+      <article class="flex items-center gap-2 bg-surface px-4 py-3">
+        <span class="text-base font-semibold text-ink">On leave:</span>
+        <span class="text-base font-semibold text-brand">
           {{ teamOverview.summary.onLeave }}
-        </strong>
+        </span>
       </article>
-      <article class="px-5 py-4">
-        <p class="text-xs font-semibold text-muted">Pending requests</p>
-        <strong class="mt-2 block text-xl tabular-nums">
+      <article class="flex items-center gap-2 bg-surface px-4 py-3">
+        <span class="text-base font-semibold text-ink">Pending requests:</span>
+        <span class="text-base font-semibold text-brand">
           {{ teamOverview.summary.pendingRequests }}
-        </strong>
+        </span>
       </article>
     </section>
 

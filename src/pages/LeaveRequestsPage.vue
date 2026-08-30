@@ -159,32 +159,32 @@ function handleWithdraw(requestId) {
     </p>
 
     <section
-      class="mt-6 grid grid-cols-2 border border-line bg-surface lg:grid-cols-4"
+      class="mt-6 grid grid-cols-2 gap-px border border-line bg-line lg:grid-cols-4"
       aria-label="Annual leave balance"
     >
-      <article class="border-b border-r border-line px-5 py-4 lg:border-b-0">
-        <p class="text-xs font-semibold text-muted">Annual allowance</p>
-        <strong class="mt-2 block text-xl tabular-nums">
+      <article class="flex items-center gap-2 bg-surface px-4 py-3">
+        <span class="text-base font-semibold text-ink">Annual allowance:</span>
+        <span class="text-base font-semibold text-brand">
           {{ leaveOverview.balance.allowance }} days
-        </strong>
+        </span>
       </article>
-      <article class="border-b border-line px-5 py-4 lg:border-b-0 lg:border-r">
-        <p class="text-xs font-semibold text-muted">Remaining</p>
-        <strong class="mt-2 block text-xl tabular-nums">
+      <article class="flex items-center gap-2 bg-surface px-4 py-3">
+        <span class="text-base font-semibold text-ink">Remaining:</span>
+        <span class="text-base font-semibold text-brand">
           {{ leaveOverview.balance.remainingDays }} days
-        </strong>
+        </span>
       </article>
-      <article class="border-r border-line px-5 py-4">
-        <p class="text-xs font-semibold text-muted">Used</p>
-        <strong class="mt-2 block text-xl tabular-nums">
+      <article class="flex items-center gap-2 bg-surface px-4 py-3">
+        <span class="text-base font-semibold text-ink">Used:</span>
+        <span class="text-base font-semibold text-brand">
           {{ leaveOverview.balance.usedDays }} days
-        </strong>
+        </span>
       </article>
-      <article class="px-5 py-4">
-        <p class="text-xs font-semibold text-muted">Pending approval</p>
-        <strong class="mt-2 block text-xl tabular-nums">
+      <article class="flex items-center gap-2 bg-surface px-4 py-3">
+        <span class="text-base font-semibold text-ink">Pending approval:</span>
+        <span class="text-base font-semibold text-brand">
           {{ leaveOverview.balance.pendingDays }} days
-        </strong>
+        </span>
       </article>
     </section>
 

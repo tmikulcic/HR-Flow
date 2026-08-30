@@ -68,13 +68,6 @@ const tabs = [
   { value: 'company', label: 'Company' },
 ];
 
-const summaryBorderClasses = [
-  '',
-  'border-t border-line sm:border-l sm:border-t-0',
-  'border-t border-line xl:border-l xl:border-t-0',
-  'border-t border-line sm:border-l xl:border-t-0',
-];
-
 function clearCompanyErrors() {
   Object.keys(companyErrors).forEach((key) => delete companyErrors[key]);
 }
@@ -190,18 +183,18 @@ watch(
     </p>
 
     <section
-      class="mt-6 grid border border-line bg-surface sm:grid-cols-2 xl:grid-cols-4"
+      class="mt-6 grid gap-px border border-line bg-line sm:grid-cols-2 xl:grid-cols-4"
       aria-label="Administration summary"
     >
       <article
-        v-for="(item, index) in summaryItems"
+        v-for="item in summaryItems"
         :key="item.label"
-        :class="['px-5 py-4', summaryBorderClasses[index]]"
+        class="flex items-center gap-2 bg-surface px-4 py-3"
       >
-        <p class="text-xs font-semibold text-muted">{{ item.label }}</p>
-        <strong class="mt-2 block text-xl tabular-nums">
-          {{ item.value }}
-        </strong>
+        <span class="text-base font-semibold text-ink">
+          {{ item.label }}:
+        </span>
+        <span class="text-base font-semibold text-brand">{{ item.value }}</span>
       </article>
     </section>
 

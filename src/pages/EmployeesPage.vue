@@ -93,15 +93,19 @@ function handleEmployeeSaved() {
         <h2>Employees</h2>
       </div>
 
-      <div class="flex flex-wrap items-end gap-6">
-        <div class="flex gap-6 text-right">
-          <div>
-            <strong class="block text-lg">{{ employees.length }}</strong>
-            <span class="text-xs text-muted">Employees</span>
+      <div class="flex flex-wrap items-center gap-6">
+        <div class="flex flex-wrap gap-x-6 gap-y-2">
+          <div class="flex items-center gap-2">
+            <span class="text-base font-semibold text-ink">Employees:</span>
+            <span class="text-base font-semibold text-brand">
+              {{ employees.length }}
+            </span>
           </div>
-          <div>
-            <strong class="block text-lg">{{ teamCount }}</strong>
-            <span class="text-xs text-muted">Teams</span>
+          <div class="flex items-center gap-2">
+            <span class="text-base font-semibold text-ink">Teams:</span>
+            <span class="text-base font-semibold text-brand">
+              {{ teamCount }}
+            </span>
           </div>
         </div>
         <button
