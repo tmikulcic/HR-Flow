@@ -61,7 +61,6 @@
  * @property {string} date
  * @property {string} startTime
  * @property {string} endTime
- * @property {number} breakMinutes
  * @property {number} totalMinutes
  * @property {import('./constants.js').TimeEntryStatus} status
  */

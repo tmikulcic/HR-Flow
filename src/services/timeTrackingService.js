@@ -4,6 +4,7 @@ import {
   teamRepository,
   timeEntryRepository,
 } from '../repositories/index.js';
+import { calculateWorkedMinutes } from './timeEntryManagementService.js';
 
 const DAY_IN_MILLISECONDS = 86_400_000;
 const WORKDAYS_PER_WEEK = 5;
@@ -104,6 +105,9 @@ export function getWeeklyTimeRecords(companyId, employeeId, weekStart) {
     const dateId = toDateString(date);
     const entry = entries.find((item) => item.date === dateId);
     const isComplete = entry?.status === TIME_ENTRY_STATUSES.COMPLETE;
+    const totalMinutes = isComplete
+      ? calculateWorkedMinutes(entry.startTime, entry.endTime)
+      : 0;
 
     return {
       date: dateId,
@@ -115,10 +119,8 @@ export function getWeeklyTimeRecords(companyId, employeeId, weekStart) {
       entryId: entry?.id ?? null,
       startTime: isComplete ? entry.startTime : '—',
       endTime: isComplete ? entry.endTime : '—',
-      breakLabel:
-        isComplete && entry.breakMinutes ? `${entry.breakMinutes} min` : '—',
-      totalMinutes: isComplete ? entry.totalMinutes : 0,
-      totalLabel: isComplete ? formatMinutes(entry.totalMinutes) : '—',
+      totalMinutes,
+      totalLabel: isComplete ? formatMinutes(totalMinutes) : '—',
       status: isComplete ? 'complete' : 'missing',
       statusLabel: isComplete ? 'Complete' : 'Not logged',
       statusTone: isComplete ? 'success' : 'warning',

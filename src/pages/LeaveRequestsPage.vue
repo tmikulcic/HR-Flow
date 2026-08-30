@@ -132,10 +132,6 @@ function handleWithdraw(requestId) {
           Time off
         </p>
         <h2>My leave</h2>
-        <p class="mt-2 max-w-2xl text-sm text-muted">
-          Review your annual leave balance, request history and upcoming time
-          away.
-        </p>
       </div>
 
       <RouterLink
@@ -202,7 +198,7 @@ function handleWithdraw(requestId) {
           <div>
             <h3>Request history</h3>
             <p class="mt-1 text-xs text-muted">
-              Submitted leave requests and their current status
+              Leave requests and their current status
             </p>
           </div>
           <AppSelect
@@ -242,12 +238,6 @@ function handleWithdraw(requestId) {
                   scope="col"
                   class="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
                 >
-                  Submitted
-                </th>
-                <th
-                  scope="col"
-                  class="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
-                >
                   Status
                 </th>
                 <th scope="col" class="px-5 py-3">
@@ -268,9 +258,6 @@ function handleWithdraw(requestId) {
                 </td>
                 <td class="px-5 py-4 text-sm font-semibold">
                   {{ request.durationLabel }}
-                </td>
-                <td class="px-5 py-4 text-sm text-muted">
-                  {{ request.submittedLabel }}
                 </td>
                 <td class="px-5 py-4">
                   <StatusBadge :tone="request.statusTone">

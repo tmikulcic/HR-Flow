@@ -3,21 +3,14 @@ import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import AppSidebar from '../components/AppSidebar.vue';
 import AppTopbar from '../components/AppTopbar.vue';
-import { useSessionStore } from '../stores/sessionStore.js';
 
 const route = useRoute();
-const session = useSessionStore();
 const sidebarOpen = ref(false);
 const currentYear = new Date().getFullYear();
 let navigationTrigger = null;
 let previousBodyOverflow = '';
 
 const pageTitle = computed(() => route.meta.title || 'HR-Flow');
-const pageSubtitle = computed(() =>
-  route.name === 'dashboard'
-    ? (session.currentCompany.value?.name ?? '')
-    : (route.meta.subtitle ?? ''),
-);
 
 function openNavigation(event) {
   navigationTrigger = event?.currentTarget ?? null;
@@ -80,11 +73,7 @@ onBeforeUnmount(() => {
     />
 
     <div class="flex h-dvh min-w-0 flex-col overflow-hidden">
-      <AppTopbar
-        :title="pageTitle"
-        :subtitle="pageSubtitle"
-        @open-navigation="openNavigation"
-      />
+      <AppTopbar :title="pageTitle" @open-navigation="openNavigation" />
       <main
         id="main-content"
         class="min-h-0 flex-1 overflow-y-auto p-5 sm:p-page"

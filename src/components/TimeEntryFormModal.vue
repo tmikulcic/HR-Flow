@@ -132,16 +132,6 @@ watch(
           required
         />
       </div>
-
-      <AppInput
-        v-model="form.breakMinutes"
-        label="Break (minutes)"
-        type="number"
-        min="0"
-        step="1"
-        :error="errors.breakMinutes"
-        required
-      />
     </form>
 
     <template #footer>

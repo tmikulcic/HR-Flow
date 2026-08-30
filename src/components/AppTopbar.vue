@@ -11,10 +11,6 @@ defineProps({
     type: String,
     default: 'HR-Flow',
   },
-  subtitle: {
-    type: String,
-    default: '',
-  },
 });
 
 defineEmits(['open-navigation']);
@@ -44,12 +40,7 @@ const currentEmployeeName = computed(() => {
       >
         <AppIcon name="menu" :size="19" />
       </button>
-      <div class="min-w-0">
-        <h1 class="truncate text-lg">{{ title }}</h1>
-        <p v-if="subtitle" class="mt-1 truncate text-xs text-muted">
-          {{ subtitle }}
-        </p>
-      </div>
+      <h1 class="min-w-0 truncate text-lg">{{ title }}</h1>
     </div>
 
     <div class="flex items-center gap-2">

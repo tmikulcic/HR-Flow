@@ -17,10 +17,6 @@ const dashboard = computed(() =>
   ),
 );
 
-const employeeFirstName = computed(
-  () => session.currentEmployee.value?.firstName ?? 'there',
-);
-
 const currentDate = new Intl.DateTimeFormat('en', {
   weekday: 'long',
   month: 'long',
@@ -60,9 +56,6 @@ const kpiBorderClasses = [
           {{ dashboard.eyebrow }}
         </p>
         <h2>{{ dashboard.title }}</h2>
-        <p class="mt-2 max-w-2xl text-sm text-muted">
-          Good morning, {{ employeeFirstName }}. {{ dashboard.description }}
-        </p>
         <p class="mt-1 text-xs text-subtle">{{ currentDate }}</p>
       </div>
 

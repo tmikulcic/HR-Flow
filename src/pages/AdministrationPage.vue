@@ -179,9 +179,6 @@ watch(
         Workspace settings
       </p>
       <h2>Administration</h2>
-      <p class="mt-2 max-w-2xl text-sm text-muted">
-        Manage company access, team ownership and core workspace information.
-      </p>
     </section>
 
     <p

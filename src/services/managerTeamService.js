@@ -9,6 +9,7 @@ import {
   teamRepository,
   timeEntryRepository,
 } from '../repositories/index.js';
+import { calculateWorkedMinutes } from './timeEntryManagementService.js';
 import { getWeekStart } from './timeTrackingService.js';
 
 const DAY_IN_MILLISECONDS = 86_400_000;
@@ -138,7 +139,11 @@ export function getManagerTeamOverview(
       const availability = getAvailability(employee, leaveRequests, today);
       const totalMinutes = timeEntries
         .filter((entry) => entry.employeeId === employee.id)
-        .reduce((total, entry) => total + entry.totalMinutes, 0);
+        .reduce(
+          (total, entry) =>
+            total + calculateWorkedMinutes(entry.startTime, entry.endTime),
+          0,
+        );
 
       return {
         id: employee.id,

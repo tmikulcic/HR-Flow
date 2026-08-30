@@ -91,10 +91,6 @@ function handleEmployeeSaved() {
           People directory
         </p>
         <h2>Employees</h2>
-        <p class="mt-2 max-w-2xl text-sm text-muted">
-          Review employee information and organizational assignments for
-          {{ session.currentCompany.value?.name }}.
-        </p>
       </div>
 
       <div class="flex flex-wrap items-end gap-6">

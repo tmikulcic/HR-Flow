@@ -40,7 +40,6 @@ const routes = [
         component: DashboardPage,
         meta: {
           title: 'Dashboard',
-          subtitle: 'Company overview',
           permission: PERMISSIONS.VIEW_DASHBOARD,
         },
       },
@@ -50,7 +49,6 @@ const routes = [
         component: EmployeesPage,
         meta: {
           title: 'Employees',
-          subtitle: 'People directory and employee records',
           permission: PERMISSIONS.VIEW_EMPLOYEES,
         },
       },
@@ -60,7 +58,6 @@ const routes = [
         component: EmployeeDetailPage,
         meta: {
           title: 'Employee profile',
-          subtitle: 'Employee details and activity',
           permission: PERMISSIONS.VIEW_EMPLOYEE_DETAILS,
         },
       },
@@ -70,7 +67,6 @@ const routes = [
         component: TimeTrackingPage,
         meta: {
           title: 'Time tracking',
-          subtitle: 'Your weekly work records',
           permission: PERMISSIONS.TRACK_TIME,
         },
       },
@@ -80,7 +76,6 @@ const routes = [
         component: LeaveRequestsPage,
         meta: {
           title: 'My leave',
-          subtitle: 'Balance, requests and upcoming time off',
           permission: PERMISSIONS.MANAGE_OWN_LEAVE,
         },
       },
@@ -90,7 +85,6 @@ const routes = [
         component: NewLeaveRequestPage,
         meta: {
           title: 'New leave request',
-          subtitle: 'Request time off',
           permission: PERMISSIONS.MANAGE_OWN_LEAVE,
         },
       },
@@ -100,7 +94,6 @@ const routes = [
         component: TeamPage,
         meta: {
           title: 'My team',
-          subtitle: 'Direct reports and availability',
           permission: PERMISSIONS.VIEW_TEAM,
         },
       },
@@ -110,7 +103,6 @@ const routes = [
         component: ApprovalsPage,
         meta: {
           title: 'Approvals',
-          subtitle: 'Review team leave requests',
           permission: PERMISSIONS.REVIEW_LEAVE_REQUESTS,
         },
       },
@@ -120,7 +112,6 @@ const routes = [
         component: NotificationsPage,
         meta: {
           title: 'Notifications',
-          subtitle: 'Updates that need your attention',
           permission: PERMISSIONS.VIEW_NOTIFICATIONS,
         },
       },
@@ -130,7 +121,6 @@ const routes = [
         component: AdministrationPage,
         meta: {
           title: 'Administration',
-          subtitle: 'Users, roles and company settings',
           permission: PERMISSIONS.MANAGE_ADMINISTRATION,
         },
       },

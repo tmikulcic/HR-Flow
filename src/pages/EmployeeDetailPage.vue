@@ -124,7 +124,7 @@ watch(
       </section>
 
       <nav
-        class="mt-6 flex overflow-x-auto border-b border-line"
+        class="mt-6 flex overflow-x-auto overflow-y-hidden border-b border-line"
         aria-label="Profile sections"
         role="tablist"
       >
@@ -167,38 +167,38 @@ watch(
                 Contact and employment details
               </p>
             </header>
-            <dl class="grid sm:grid-cols-2">
-              <div class="border-b border-line px-5 py-4 sm:border-r">
+            <dl class="grid gap-px bg-line sm:grid-cols-2">
+              <div class="bg-surface px-5 py-4">
                 <dt class="text-xs text-muted">Work email</dt>
                 <dd class="mt-1 text-sm font-semibold">
                   {{ profile.employee.email }}
                 </dd>
               </div>
-              <div class="border-b border-line px-5 py-4">
+              <div class="bg-surface px-5 py-4">
                 <dt class="text-xs text-muted">Phone</dt>
                 <dd class="mt-1 text-sm font-semibold">
                   {{ profile.employee.phone || '—' }}
                 </dd>
               </div>
-              <div class="border-b border-line px-5 py-4 sm:border-r">
+              <div class="bg-surface px-5 py-4">
                 <dt class="text-xs text-muted">Start date</dt>
                 <dd class="mt-1 text-sm font-semibold">
                   {{ profile.employee.startDateLabel }}
                 </dd>
               </div>
-              <div class="border-b border-line px-5 py-4">
+              <div class="bg-surface px-5 py-4">
                 <dt class="text-xs text-muted">Employment</dt>
                 <dd class="mt-1 text-sm font-semibold">
                   {{ profile.employee.employmentTypeLabel }}
                 </dd>
               </div>
-              <div class="px-5 py-4 sm:border-r">
+              <div class="bg-surface px-5 py-4">
                 <dt class="text-xs text-muted">Location</dt>
                 <dd class="mt-1 text-sm font-semibold">
                   {{ profile.employee.location }}
                 </dd>
               </div>
-              <div class="px-5 py-4">
+              <div class="bg-surface px-5 py-4">
                 <dt class="text-xs text-muted">Employee ID</dt>
                 <dd class="mt-1 text-sm font-semibold">
                   {{ profile.employee.id }}
@@ -356,7 +356,7 @@ watch(
       >
         <table
           v-if="profile.timeRecords.length"
-          class="w-full min-w-[760px] border-collapse text-left"
+          class="w-full min-w-[680px] border-collapse text-left"
         >
           <caption class="sr-only">
             Employee weekly time records
@@ -367,7 +367,6 @@ watch(
               <th scope="col" class="px-5 py-3 text-xs text-muted">
                 Working time
               </th>
-              <th scope="col" class="px-5 py-3 text-xs text-muted">Break</th>
               <th scope="col" class="px-5 py-3 text-xs text-muted">Total</th>
               <th scope="col" class="px-5 py-3 text-xs text-muted">Status</th>
             </tr>
@@ -379,9 +378,6 @@ watch(
               </td>
               <td class="px-5 py-4 text-sm text-muted">
                 {{ entry.timeRange }}
-              </td>
-              <td class="px-5 py-4 text-sm text-muted">
-                {{ entry.breakLabel }}
               </td>
               <td class="px-5 py-4 text-sm font-semibold">
                 {{ entry.totalLabel }}
@@ -409,7 +405,7 @@ watch(
       >
         <table
           v-if="profile.leaveHistory.length"
-          class="w-full min-w-[820px] border-collapse text-left"
+          class="w-full min-w-[720px] border-collapse text-left"
         >
           <caption class="sr-only">
             Employee leave request history
@@ -419,9 +415,6 @@ watch(
               <th scope="col" class="px-5 py-3 text-xs text-muted">Type</th>
               <th scope="col" class="px-5 py-3 text-xs text-muted">Dates</th>
               <th scope="col" class="px-5 py-3 text-xs text-muted">Days</th>
-              <th scope="col" class="px-5 py-3 text-xs text-muted">
-                Submitted
-              </th>
               <th scope="col" class="px-5 py-3 text-xs text-muted">Status</th>
             </tr>
           </thead>
@@ -435,9 +428,6 @@ watch(
               </td>
               <td class="px-5 py-4 text-sm text-muted">
                 {{ request.workingDays }}
-              </td>
-              <td class="px-5 py-4 text-sm text-muted">
-                {{ request.submittedLabel }}
               </td>
               <td class="px-5 py-4">
                 <StatusBadge :tone="request.statusTone">

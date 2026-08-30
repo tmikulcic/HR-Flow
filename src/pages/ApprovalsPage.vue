@@ -100,10 +100,6 @@ function handleDecision({ requestId, decision, comment }) {
         Manager workspace
       </p>
       <h2>Leave approvals</h2>
-      <p class="mt-2 max-w-3xl text-sm text-muted">
-        Review requested dates, team coverage and employee notes before making a
-        decision.
-      </p>
     </section>
 
     <p

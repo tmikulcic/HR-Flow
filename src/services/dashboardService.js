@@ -13,6 +13,7 @@ import {
   timeEntryRepository,
   userRepository,
 } from '../repositories/index.js';
+import { calculateWorkedMinutes } from './timeEntryManagementService.js';
 
 const DAY_IN_MILLISECONDS = 86_400_000;
 
@@ -116,7 +117,8 @@ function getWeeklyAttendance(timeEntries, weekDays) {
   const days = weekDays.map((day) => {
     const entries = completedEntries.filter((entry) => entry.date === day.date);
     const totalMinutes = entries.reduce(
-      (total, entry) => total + entry.totalMinutes,
+      (total, entry) =>
+        total + calculateWorkedMinutes(entry.startTime, entry.endTime),
       0,
     );
 
@@ -186,7 +188,9 @@ function getLatestTimeActivities(timeEntries, employeesById) {
       id: `activity-${entry.id}`,
       type: 'time',
       title: `${getEmployeeName(employee)} logged working time`,
-      description: `${formatMinutes(entry.totalMinutes)} recorded`,
+      description: `${formatMinutes(
+        calculateWorkedMinutes(entry.startTime, entry.endTime),
+      )} recorded`,
       timestamp: `${entry.date}T17:00:00.000Z`,
       dateLabel: formatDate(`${entry.date}T12:00:00.000Z`),
       status: '',
@@ -281,7 +285,11 @@ function getKpis({
   ).length;
   const totalMinutes = scopedTimeEntries
     .filter((entry) => entry.status === TIME_ENTRY_STATUSES.COMPLETE)
-    .reduce((total, entry) => total + entry.totalMinutes, 0);
+    .reduce(
+      (total, entry) =>
+        total + calculateWorkedMinutes(entry.startTime, entry.endTime),
+      0,
+    );
 
   if (user.role === USER_ROLES.MANAGER) {
     const availableEmployees = scopedEmployees.filter(

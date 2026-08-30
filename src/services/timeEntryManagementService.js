@@ -5,8 +5,7 @@ import {
 } from '../repositories/index.js';
 
 const DEFAULT_START_TIME = '08:00';
-const DEFAULT_END_TIME = '16:30';
-const DEFAULT_BREAK_MINUTES = 30;
+const DEFAULT_END_TIME = '16:00';
 
 function createId() {
   return `time-${globalThis.crypto.randomUUID()}`;
@@ -43,14 +42,26 @@ function timeToMinutes(time) {
   return hours * 60 + minutes;
 }
 
-function normalizeValues(values) {
-  const breakValue = String(values.breakMinutes ?? '').trim();
+export function calculateWorkedMinutes(startTime, endTime) {
+  const startMinutes = timeToMinutes(startTime);
+  const endMinutes = timeToMinutes(endTime);
 
+  if (
+    startMinutes === null ||
+    endMinutes === null ||
+    endMinutes <= startMinutes
+  ) {
+    return 0;
+  }
+
+  return endMinutes - startMinutes;
+}
+
+function normalizeValues(values) {
   return {
     date: String(values.date ?? '').trim(),
     startTime: String(values.startTime ?? '').trim(),
     endTime: String(values.endTime ?? '').trim(),
-    breakMinutes: breakValue === '' ? Number.NaN : Number(breakValue),
   };
 }
 
@@ -79,17 +90,6 @@ function validateTimeEntry(companyId, employeeId, entryId, values) {
     errors.endTime = 'Enter a valid end time.';
   } else if (startMinutes !== null && endMinutes <= startMinutes) {
     errors.endTime = 'End time must be after start time.';
-  }
-
-  if (!Number.isInteger(values.breakMinutes) || values.breakMinutes < 0) {
-    errors.breakMinutes = 'Enter a valid number of break minutes.';
-  } else if (
-    startMinutes !== null &&
-    endMinutes !== null &&
-    endMinutes > startMinutes &&
-    values.breakMinutes >= endMinutes - startMinutes
-  ) {
-    errors.breakMinutes = 'Break must be shorter than the working period.';
   }
 
   const duplicateEntry = timeEntryRepository
@@ -129,10 +129,6 @@ export function getTimeEntryFormData(
         : DEFAULT_START_TIME,
     endTime:
       belongsToEmployee && entry.endTime ? entry.endTime : DEFAULT_END_TIME,
-    breakMinutes:
-      belongsToEmployee && entry.status === TIME_ENTRY_STATUSES.COMPLETE
-        ? entry.breakMinutes
-        : DEFAULT_BREAK_MINUTES,
   };
 }
 
@@ -168,15 +164,12 @@ export function saveTimeEntry(companyId, employeeId, entryId, formValues) {
     return { success: false, errors, entry: null };
   }
 
-  const startMinutes = timeToMinutes(values.startTime);
-  const endMinutes = timeToMinutes(values.endTime);
   const record = {
     managerId: employee.managerId,
     date: values.date,
     startTime: values.startTime,
     endTime: values.endTime,
-    breakMinutes: values.breakMinutes,
-    totalMinutes: endMinutes - startMinutes - values.breakMinutes,
+    totalMinutes: calculateWorkedMinutes(values.startTime, values.endTime),
     status: TIME_ENTRY_STATUSES.COMPLETE,
   };
   const missingEntry = !currentEntry

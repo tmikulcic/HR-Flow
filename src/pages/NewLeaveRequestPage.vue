@@ -82,9 +82,6 @@ function handleSubmit() {
         Time off
       </p>
       <h2>New leave request</h2>
-      <p class="mt-2 max-w-2xl text-sm text-muted">
-        Enter the requested dates and provide a short reason for your manager.
-      </p>
     </section>
 
     <section

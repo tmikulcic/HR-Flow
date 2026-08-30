@@ -65,9 +65,6 @@ watch(
           Manager workspace
         </p>
         <h2>{{ teamOverview.team.name }} team</h2>
-        <p class="mt-2 max-w-2xl text-sm text-muted">
-          Review availability and weekly recorded time for your direct reports.
-        </p>
       </div>
 
       <RouterLink

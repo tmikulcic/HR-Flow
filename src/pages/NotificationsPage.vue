@@ -109,9 +109,6 @@ watch(
           Activity center
         </p>
         <h2>Notifications</h2>
-        <p class="mt-2 max-w-2xl text-sm text-muted">
-          Review updates about leave, working time and employee records.
-        </p>
       </div>
 
       <AppButton

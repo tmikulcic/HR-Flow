@@ -11,6 +11,7 @@ import {
   timeEntryRepository,
   userRepository,
 } from '../repositories/index.js';
+import { calculateWorkedMinutes } from './timeEntryManagementService.js';
 import { getEmployeeDirectory } from './employeeService.js';
 
 const EMPLOYMENT_TYPE_LABELS = Object.freeze({
@@ -91,8 +92,9 @@ function getTimeRecords(companyId, employeeId) {
         entry.startTime && entry.endTime
           ? `${entry.startTime} – ${entry.endTime}`
           : 'Not logged',
-      breakLabel: entry.breakMinutes ? `${entry.breakMinutes} minutes` : '—',
-      totalLabel: formatMinutes(entry.totalMinutes),
+      totalLabel: formatMinutes(
+        calculateWorkedMinutes(entry.startTime, entry.endTime),
+      ),
       statusLabel:
         entry.status === TIME_ENTRY_STATUSES.COMPLETE
           ? 'Complete'

@@ -28,7 +28,7 @@ const entryModalEditing = ref(false);
 const quickForm = reactive({
   date: '',
   startTime: '08:00',
-  endTime: '16:30',
+  endTime: '16:00',
 });
 const quickErrors = reactive({});
 const successMessage = ref('');
@@ -77,7 +77,7 @@ function resetQuickForm() {
   quickForm.date =
     firstMissingDay?.date ?? weeklyRecords.value?.weekStart ?? '';
   quickForm.startTime = '08:00';
-  quickForm.endTime = '16:30';
+  quickForm.endTime = '16:00';
   clearQuickErrors();
 }
 
@@ -108,10 +108,7 @@ function handleQuickSubmit() {
     session.currentCompany.value?.id,
     selectedEmployeeId.value,
     matchingDay?.status === 'missing' ? (matchingDay.entryId ?? '') : '',
-    {
-      ...quickForm,
-      breakMinutes: 30,
-    },
+    quickForm,
   );
 
   if (!result.success) {
@@ -169,10 +166,6 @@ watch(
           Working time
         </p>
         <h2>Weekly time records</h2>
-        <p class="mt-2 max-w-2xl text-sm text-muted">
-          Review recorded working time for each weekday and move between
-          previous or upcoming weeks.
-        </p>
       </div>
 
       <div v-if="canSelectEmployee" class="w-full max-w-xs">
@@ -304,7 +297,7 @@ watch(
               </StatusBadge>
             </div>
 
-            <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 text-xs">
+            <dl class="mt-4 grid grid-cols-3 gap-x-5 gap-y-3 text-xs">
               <div class="min-w-0">
                 <dt class="text-muted">Start</dt>
                 <dd class="mt-1 font-semibold text-ink">
@@ -315,12 +308,6 @@ watch(
                 <dt class="text-muted">End</dt>
                 <dd class="mt-1 font-semibold text-ink">
                   {{ day.endTime }}
-                </dd>
-              </div>
-              <div class="min-w-0">
-                <dt class="text-muted">Break</dt>
-                <dd class="mt-1 font-semibold text-ink">
-                  {{ day.breakLabel }}
                 </dd>
               </div>
               <div class="min-w-0">
@@ -343,7 +330,7 @@ watch(
         </div>
 
         <div class="hidden overflow-x-auto md:block">
-          <table class="w-full min-w-[860px] border-collapse text-left">
+          <table class="w-full min-w-[760px] border-collapse text-left">
             <caption class="sr-only">
               Weekly working time records
             </caption>
@@ -366,12 +353,6 @@ watch(
                   class="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
                 >
                   End
-                </th>
-                <th
-                  scope="col"
-                  class="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
-                >
-                  Break
                 </th>
                 <th
                   scope="col"
@@ -405,9 +386,6 @@ watch(
                 </td>
                 <td class="px-5 py-4 text-sm text-muted">
                   {{ day.endTime }}
-                </td>
-                <td class="px-5 py-4 text-sm text-muted">
-                  {{ day.breakLabel }}
                 </td>
                 <td class="px-5 py-4 text-sm font-semibold">
                   {{ day.totalLabel }}
@@ -486,17 +464,6 @@ watch(
               required
             />
           </div>
-          <p class="text-xs leading-5 text-subtle">
-            A standard 30-minute break is applied to quick entries.
-          </p>
-          <p
-            v-if="quickErrors.breakMinutes"
-            class="text-xs text-danger"
-            role="alert"
-          >
-            {{ quickErrors.breakMinutes }}
-          </p>
-
           <AppButton type="submit" class="w-full">Save quick entry</AppButton>
           <AppButton
             variant="secondary"
