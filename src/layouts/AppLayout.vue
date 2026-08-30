@@ -8,6 +8,7 @@ import { useSessionStore } from '../stores/sessionStore.js';
 const route = useRoute();
 const session = useSessionStore();
 const sidebarOpen = ref(false);
+const currentYear = new Date().getFullYear();
 let navigationTrigger = null;
 let previousBodyOverflow = '';
 
@@ -54,7 +55,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="min-h-dvh bg-canvas lg:grid lg:grid-cols-[244px_minmax(0,1fr)]">
+  <div
+    class="h-dvh overflow-hidden bg-canvas lg:grid lg:grid-cols-[244px_minmax(0,1fr)]"
+  >
     <a
       href="#main-content"
       class="fixed left-4 top-4 z-[60] -translate-y-20 rounded-control bg-ink px-4 py-2 text-sm font-semibold text-white transition-transform focus:translate-y-0"
@@ -76,15 +79,25 @@ onBeforeUnmount(() => {
       @click="closeNavigation()"
     />
 
-    <div class="min-w-0">
+    <div class="flex h-dvh min-w-0 flex-col overflow-hidden">
       <AppTopbar
         :title="pageTitle"
         :subtitle="pageSubtitle"
         @open-navigation="openNavigation"
       />
-      <div id="main-content" class="p-5 sm:p-page" tabindex="-1">
+      <main
+        id="main-content"
+        class="min-h-0 flex-1 overflow-y-auto p-5 sm:p-page"
+        tabindex="-1"
+      >
         <RouterView />
-      </div>
+      </main>
+
+      <footer
+        class="shrink-0 border-t border-line bg-surface px-5 py-2 text-center text-xs text-subtle sm:px-page"
+      >
+        {{ currentYear }}. FIPU - Studij Informatike
+      </footer>
     </div>
   </div>
 </template>

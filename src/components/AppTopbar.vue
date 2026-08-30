@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue';
-import { getUnreadNotificationCount } from '../services/notificationService.js';
 import { useSessionStore } from '../stores/sessionStore.js';
 import AppIcon from './AppIcon.vue';
 import Avatar from './Avatar.vue';
@@ -30,23 +29,11 @@ const currentEmployeeName = computed(() => {
   return session.currentUser.value?.email ?? 'HR-Flow user';
 });
 
-const unreadNotificationCount = computed(() =>
-  getUnreadNotificationCount(
-    session.currentCompany.value?.id,
-    session.currentUser.value?.id,
-  ),
-);
-
-const notificationAriaLabel = computed(() =>
-  unreadNotificationCount.value
-    ? `Notifications, ${unreadNotificationCount.value} unread`
-    : 'Notifications',
-);
 </script>
 
 <template>
   <header
-    class="flex min-h-[74px] items-center justify-between border-b border-line bg-surface px-5 sm:px-page"
+    class="flex min-h-[74px] shrink-0 items-center justify-between border-b border-line bg-surface px-5 sm:px-page"
   >
     <div class="flex min-w-0 items-center gap-3">
       <button
@@ -66,18 +53,6 @@ const notificationAriaLabel = computed(() =>
     </div>
 
     <div class="flex items-center gap-2">
-      <RouterLink
-        to="/notifications"
-        class="relative grid size-9 place-items-center rounded-control border border-line-strong bg-surface text-muted hover:bg-surface-soft"
-        :aria-label="notificationAriaLabel"
-      >
-        <AppIcon name="bell" :size="17" />
-        <span
-          v-if="unreadNotificationCount"
-          class="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-danger"
-          aria-hidden="true"
-        />
-      </RouterLink>
       <Avatar :name="currentEmployeeName" size="small" />
     </div>
   </header>

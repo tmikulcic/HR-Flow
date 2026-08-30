@@ -87,12 +87,8 @@ const visibleWorkspaceItems = computed(() => {
     .filter((item) => hasPermission(session.currentRole.value, item.permission))
     .map((item) => ({
       ...item,
-      badge:
-        item.to === '/approvals'
-          ? pendingApprovals
-          : item.to === '/notifications'
-            ? unreadNotifications
-            : 0,
+      badge: item.to === '/approvals' ? pendingApprovals : 0,
+      iconBadge: item.to === '/notifications' ? unreadNotifications : 0,
     }));
 });
 
@@ -229,13 +225,20 @@ watch(
               >
                 <span
                   :class="[
-                    'grid size-6 shrink-0 place-items-center rounded-badge',
+                    'relative grid size-6 shrink-0 place-items-center rounded-badge',
                     isActive
                       ? 'bg-[#8ee0ca] text-sidebar'
                       : 'bg-white/6 text-[#9cc8bd]',
                   ]"
                 >
                   <AppIcon :name="item.icon" :size="15" />
+                  <span
+                    v-if="item.iconBadge"
+                    class="absolute -right-2 -top-2 grid h-4 min-w-4 place-items-center rounded-full bg-danger px-1 text-[9px] font-bold leading-none text-white"
+                    aria-label="Unread notifications"
+                  >
+                    {{ item.iconBadge }}
+                  </span>
                 </span>
                 <span>{{ item.label }}</span>
                 <span
