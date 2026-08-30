@@ -183,7 +183,7 @@ watch(
     </p>
 
     <section
-      class="mt-6 grid gap-px border border-line bg-line sm:grid-cols-2 xl:grid-cols-4"
+      class="mt-6 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4"
       aria-label="Administration summary"
     >
       <article
@@ -254,7 +254,7 @@ watch(
         </header>
 
         <div v-if="filteredUsers.length" class="overflow-x-auto">
-          <table class="w-full min-w-[960px] border-collapse text-left">
+          <table class="w-full min-w-[680px] border-collapse text-left">
             <caption class="sr-only">
               Company users, roles, teams and access status
             </caption>
@@ -283,12 +283,6 @@ watch(
                   scope="col"
                 >
                   Access
-                </th>
-                <th
-                  class="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
-                  scope="col"
-                >
-                  Added
                 </th>
                 <th class="px-5 py-3" scope="col">
                   <span class="sr-only">Manage</span>
@@ -322,9 +316,6 @@ watch(
                   <StatusBadge :tone="user.accessTone">
                     {{ user.accessLabel }}
                   </StatusBadge>
-                </td>
-                <td class="px-5 py-4 text-xs text-muted">
-                  {{ user.createdLabel }}
                 </td>
                 <td class="px-5 py-4 text-right">
                   <button
@@ -372,7 +363,7 @@ watch(
         </header>
 
         <div class="overflow-x-auto">
-          <table class="w-full min-w-[720px] border-collapse text-left">
+          <table class="w-full min-w-[620px] border-collapse text-left">
             <caption class="sr-only">
               Company teams and assigned managers
             </caption>

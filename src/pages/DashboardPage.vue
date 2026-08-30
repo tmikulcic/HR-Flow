@@ -56,7 +56,7 @@ const activityTones = {
     </section>
 
     <section
-      class="mt-6 grid gap-px border border-line bg-line sm:grid-cols-2 xl:grid-cols-4"
+      class="mt-6 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4"
       aria-label="Dashboard statistics"
     >
       <article
@@ -71,9 +71,7 @@ const activityTones = {
       </article>
     </section>
 
-    <section
-      class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]"
-    >
+    <section class="mt-6 grid gap-4">
       <article class="border border-line bg-surface">
         <header
           class="flex items-center justify-between gap-4 border-b border-line px-5 py-4"

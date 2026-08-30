@@ -175,7 +175,7 @@ function handleEmployeeSaved() {
 
       <div
         v-if="filteredEmployees.length"
-        class="border-x border-b border-line bg-surface md:hidden"
+        class="border-x border-b border-line bg-surface lg:hidden"
       >
         <article
           v-for="employee in filteredEmployees"
@@ -250,9 +250,9 @@ function handleEmployeeSaved() {
 
       <div
         v-if="filteredEmployees.length"
-        class="hidden overflow-x-auto border-x border-b border-line bg-surface md:block"
+        class="hidden overflow-x-auto border-x border-b border-line bg-surface lg:block"
       >
-        <table class="w-full min-w-[920px] border-collapse text-left">
+        <table class="w-full min-w-[680px] border-collapse text-left">
           <caption class="sr-only">
             Employee directory
           </caption>
@@ -275,12 +275,6 @@ function handleEmployeeSaved() {
                 class="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
               >
                 Team
-              </th>
-              <th
-                scope="col"
-                class="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
-              >
-                Manager
               </th>
               <th
                 scope="col"
@@ -324,9 +318,6 @@ function handleEmployeeSaved() {
               </td>
               <td class="px-5 py-4 text-sm text-muted">
                 {{ employee.teamName }}
-              </td>
-              <td class="px-5 py-4 text-sm text-muted">
-                {{ employee.managerName }}
               </td>
               <td class="px-5 py-4">
                 <StatusBadge :tone="employee.statusTone">

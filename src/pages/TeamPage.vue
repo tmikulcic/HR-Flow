@@ -150,7 +150,7 @@ watch(
       </header>
 
       <div v-if="filteredMembers.length" class="overflow-x-auto">
-        <table class="w-full min-w-[900px] border-collapse text-left">
+        <table class="w-full min-w-[620px] border-collapse text-left">
           <caption class="sr-only">
             Team members, availability and weekly recorded time
           </caption>
@@ -166,19 +166,7 @@ watch(
                 scope="col"
                 class="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
               >
-                Location
-              </th>
-              <th
-                scope="col"
-                class="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
-              >
                 Availability
-              </th>
-              <th
-                scope="col"
-                class="px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-muted"
-              >
-                Weekly progress
               </th>
               <th
                 scope="col"
@@ -204,21 +192,10 @@ watch(
                   </div>
                 </div>
               </td>
-              <td class="px-5 py-4 text-sm text-muted">
-                {{ member.location }}
-              </td>
               <td class="px-5 py-4">
                 <StatusBadge :tone="member.availabilityTone">
                   {{ member.availabilityLabel }}
                 </StatusBadge>
-              </td>
-              <td class="w-56 px-5 py-4">
-                <div class="h-2 bg-surface-soft" aria-hidden="true">
-                  <div
-                    class="h-full bg-brand"
-                    :style="{ width: `${member.timePercentage}%` }"
-                  />
-                </div>
               </td>
               <td class="px-5 py-4 text-sm font-semibold tabular-nums">
                 {{ member.totalLabel }}

@@ -120,9 +120,7 @@ watch(
       </AppButton>
     </section>
 
-    <section
-      class="mt-6 grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_340px]"
-    >
+    <section class="mt-6 grid items-start gap-4">
       <article class="border border-line bg-surface">
         <header
           class="flex flex-col gap-4 border-b border-line px-5 py-4 sm:flex-row sm:items-center sm:justify-between"

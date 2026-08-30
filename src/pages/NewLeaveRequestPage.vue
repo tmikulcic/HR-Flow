@@ -84,9 +84,7 @@ function handleSubmit() {
       <h2>New leave request</h2>
     </section>
 
-    <section
-      class="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]"
-    >
+    <section class="mt-6 grid items-start gap-4">
       <article class="border border-line bg-surface">
         <header class="border-b border-line px-5 py-4">
           <h3>Request details</h3>

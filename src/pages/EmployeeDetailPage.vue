@@ -154,7 +154,7 @@ watch(
       <section
         v-if="activeTab === 'overview'"
         id="profile-panel-overview"
-        class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.7fr)]"
+        class="mt-6 grid gap-4"
         role="tabpanel"
         aria-labelledby="profile-tab-overview"
         tabindex="0"
@@ -356,7 +356,7 @@ watch(
       >
         <table
           v-if="profile.timeRecords.length"
-          class="w-full min-w-[680px] border-collapse text-left"
+          class="w-full min-w-[600px] border-collapse text-left"
         >
           <caption class="sr-only">
             Employee weekly time records
@@ -405,7 +405,7 @@ watch(
       >
         <table
           v-if="profile.leaveHistory.length"
-          class="w-full min-w-[720px] border-collapse text-left"
+          class="w-full min-w-[620px] border-collapse text-left"
         >
           <caption class="sr-only">
             Employee leave request history

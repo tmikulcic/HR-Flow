@@ -236,7 +236,7 @@ watch(
 
     <div
       v-if="weeklyRecords"
-      class="mt-6 grid min-w-0 max-w-full items-start gap-6 xl:grid-cols-[minmax(0,1fr)_320px]"
+      class="mt-6 grid min-w-0 max-w-full items-start gap-4"
     >
       <section
         class="min-w-0 max-w-full overflow-hidden border border-line bg-surface"
@@ -271,7 +271,7 @@ watch(
           </button>
         </header>
 
-        <div class="divide-y divide-line md:hidden">
+        <div class="divide-y divide-line lg:hidden">
           <article
             v-for="day in weeklyRecords.days"
             :key="day.date"
@@ -321,8 +321,8 @@ watch(
           </article>
         </div>
 
-        <div class="hidden overflow-x-auto md:block">
-          <table class="w-full min-w-[760px] border-collapse text-left">
+        <div class="hidden overflow-x-auto lg:block">
+          <table class="w-full min-w-[680px] border-collapse text-left">
             <caption class="sr-only">
               Weekly working time records
             </caption>
